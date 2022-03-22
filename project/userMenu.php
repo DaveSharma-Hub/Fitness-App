@@ -128,7 +128,7 @@ body{
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">
-  <a href="#" id="about">Exercise</a>
+  <a href="exercise.php" id="about">Exercise</a>
   <a href="#" id="blog">Sleep</a>
   <a href="#" id="projects">Diet</a>
   <a href="#" id="contact">Instructor</a>
