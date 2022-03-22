@@ -285,7 +285,7 @@ button:hover {
 
 <div id="mySidenav" class="sidenav">
   <a href="#" id="about">Exercise</a>
-  <a href="#" id="blog">Sleep</a>
+  <a href="sleep.php" id="blog">Sleep</a>
   <a href="diet.php" id="projects">Diet</a>
   <a href="#" id="contact">Instructor</a>
 </div>
