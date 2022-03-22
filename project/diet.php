@@ -14,6 +14,7 @@
 <style>
 body{
     background-color:white;
+    font-family: 'Quicksand', cursive;
 }
 .topnav {
   margin-left:5%;
@@ -31,6 +32,7 @@ canvas {
     width: 80%;
     float:right;
 }
+
 .topnav a {
   float: right;
   color: #f2f2f2;
@@ -265,7 +267,9 @@ button:hover {
   grid-template-columns: auto auto auto auto;
   grid-gap: 42px;
 }
-
+.textbox{
+  text-align: center;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -285,7 +289,7 @@ button:hover {
 
 <div id="mySidenav" class="sidenav">
   <a href="#" id="about">Exercise</a>
-  <a href="sleep.php" id="blog">Sleep</a>
+  <a href="#" id="blog">Sleep</a>
   <a href="diet.php" id="projects">Diet</a>
   <a href="#" id="contact">Instructor</a>
 </div>
@@ -294,8 +298,10 @@ button:hover {
     <canvas id="myChart" style="max-width:400px;left:0"></canvas>
     <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
 </div>
-<h1>Your Daily Calorie Intake is:</h1>
-<h2>2678 cal</h2>
+<div class = "textbox">
+  <h1>Your Daily Calorie Intake is:</h1>
+  <h2>2678 cal</h2>
+</div>
 <!-- Button to open the modal login form -->
 <button onclick="document.getElementById('id01').style.display='block'">Add Breakfast</button>
 <button onclick="document.getElementById('id01').style.display='block'">Add Lunch</button>
@@ -323,6 +329,7 @@ class="close" title="Close Modal">&times;</span>
   <canvas id = myChart></canvas>
   <canvas id = myChart2></canvas>
 </div>
+<h1>Recipes:</h1>
 <div class = "recipes">
   <?php
   for($i=0;$i<12;$i++){
