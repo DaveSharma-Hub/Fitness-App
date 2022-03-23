@@ -269,6 +269,11 @@ canvas {
     width: 80%;
     float:right;
 }
+
+.charts{
+  background-color:rgb(0,0,0,0.1);
+  border-radius:10px;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -289,9 +294,9 @@ canvas {
 
     <div id="mySidenav" class="sidenav">
     <a href="exercise.php" id="about">Exercise</a>
-  <a href="sleep.php" id="blog">Sleep</a>
-  <a href="diet.php" id="projects">Diet</a>
-  <a href="#" id="contact">Instructor</a>
+    <a href="sleep.php" id="blog">Sleep</a>
+    <a href="diet.php" id="projects">Diet</a>
+    <a href="instructor.php" id="contact">Instructor</a>
     </div>
 </div>
 <div class="outside">
@@ -309,11 +314,12 @@ canvas {
 
     </div>
 </div>
-<div style="position:relative; z-index=-2;">
-    <canvas id="myChart" style="max-width:600px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
+<div class="charts">
+  <div style="position:relative; z-index=-2;">
+      <canvas id="myChart" style="max-width:600px;left:0"></canvas>
+      <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
+  </div>
 </div>
-
 <div id="id01" class="modal">
   
   <form class="modal-content animate" action="/action_page.php" method="post">
@@ -563,5 +569,36 @@ new Chart("myChart2", {
     }
   }
 });
+
+// Set the date we're counting down to
+
+var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+
 </script>
 </html> 

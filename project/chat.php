@@ -113,6 +113,85 @@ body{
     font-size: 2em;
     color: #666;
 }
+.chat{
+    background-color:rgb(0,0,0,0.1);
+    border-radius:10px;
+    width:90%;
+    margin:0 auto;
+    height:50vh;
+    overflow-y:auto;
+}
+.left{
+    float:left;
+    font-family: 'Quicksand', cursive;
+    font-size: 1.5em;
+    width:25%;
+    background-color:green;
+    padding:5px;
+    border-radius:10px;
+    color:white;
+}
+.right{
+    float:right;
+    font-family: 'Quicksand', cursive;
+    font-size: 1.5em;
+    width:25%;
+    background-color:blue;
+    padding:5px;
+    border-radius:10px;
+    color:white;
+}
+.leftMe{
+    float:left;
+    font-family: 'Quicksand', cursive;
+    font-size: 1em;
+    width:auto;
+    background-color:green;
+    padding:5px;
+    border-radius:10px;
+    color:white;
+}
+.rightThem{
+    float:right;
+    font-family: 'Quicksand', cursive;
+    font-size: 1em;
+    width:auto;
+    background-color:blue;
+    padding:5px;
+    border-radius:10px;
+    color:white;
+}
+
+.message{
+    background-color:rgb(0,0,0,0.1);
+    border-radius:10px;
+    width:90%;
+    margin:0 auto;
+    height:10vh;
+}
+
+.message input[type=text] {
+  width: 85%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-family:'Quicksand',cursive;
+  font-size:1.5rem;
+  font-weight:bold;
+}
+button {
+  background-color: red;
+  color: white;
+  padding: 20px 10px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 10%;
+  border-radius: 10px;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -137,9 +216,32 @@ body{
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+<div class="chat">
+    <?php
+        // for($i=0;$i<10;$i++){
+        //     if($i==){
+        //         echo "<div class='left'>Hello</div>";
+        //     }else{
+
+        //     }
+        // }
+        
+    ?>
+    <div class="leftMe">You</div><div class="left">Hello</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Hi</div><br><br>
+    <div class="leftMe">You</div><div class="left">I messaged you the workout plan.</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Thanks</div><br><br>
+    <div class="leftMe">You</div><div class="left">Did it suit you?</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Very much so</div><br><br>
+    <div class="leftMe">You</div><div class="left">Have a great rest of your day</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">You as well</div><br><br>
+
+</div>
+<div class="message">
+    <form>
+        <input type="text">
+        <button type="submit">Message</button>
+    </form>
 </div>
 
 </body>

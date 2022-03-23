@@ -288,10 +288,10 @@ button:hover {
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">
-<a href="exercise.php" id="about">Exercise</a>
+  <a href="exercise.php" id="about">Exercise</a>
   <a href="sleep.php" id="blog">Sleep</a>
   <a href="diet.php" id="projects">Diet</a>
-  <a href="#" id="contact">Instructor</a>
+  <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
 <div style="position:relative;">

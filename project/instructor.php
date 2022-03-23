@@ -11,7 +11,7 @@
 <head>
 
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet"> 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <style>
@@ -113,6 +113,54 @@ body{
     font-size: 2em;
     color: #666;
 }
+.subscribe{
+    background-color:rgb(0,0,0,0.1);
+    font-family: 'Quicksand', cursive;
+    border-radius:10px;
+    width:48%;
+    float:left;
+    text-align:center;
+}
+.subscribe a{
+    /* float:right; */
+    background-color: #f06262;
+    text-align: center;
+    text-decoration: none;
+    font-size: 17px;
+    border-radius:5px;
+    color:white;
+    padding:1px;
+}
+.subscribe #review{
+    background-color: #f0a062;
+    text-align: center;
+    text-decoration: none;
+    font-size: 17px;
+    border-radius:5px;
+    color:white;
+    padding:1px;
+}
+.chat{
+    background-color:rgb(0,0,0,0.1);
+    font-family: 'Quicksand', cursive;
+    border-radius:10px;
+    float:right;
+    width:48%;
+    text-align:center;
+}
+.chat a{
+    /* float:right; */
+    background-color: blue;
+    text-align: center;
+    text-decoration: none;
+    font-size: 17px;
+    border-radius:5px;
+    color:white;
+    padding:1px;
+}
+.checked {
+  color: orange;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -134,13 +182,40 @@ body{
   <a href="exercise.php" id="about">Exercise</a>
   <a href="sleep.php" id="blog">Sleep</a>
   <a href="diet.php" id="projects">Diet</a>
-  <a href="instructor.php" id="contact">Instructor</a>
+  <a href="#" id="contact">Instructor</a>
 </div>
+<div class="outer">
+    <div class="subscribe">
+        <h1>Instructor Subscription</h1>
 
-<div style="position:relative;">
+        <?php
+            for($i=0;$i<6;$i++){
+                echo "<p>";
+                if($i%2==0){
+                    echo "	&#11088;&#11088;&#11088;&#9733;&#9733;";
+                }else{
+                    echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
+                }
+                echo "Instructor ".$i."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
+            }
+        ?>
+    </div>
+    <div class="chat">
+        <h1>Instructor Chat</h1>
+        <h4>(Instructors you have subscribed too)</h4>
+
+        <?php
+            for($i=0;$i<3;$i++){
+                echo "<p>Instructor ".$i."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='chat.php'>Chat</a></p>";
+            }
+            //WE CAN MAKE THE ABOVE 2 INTO A FORM!!!!!!!!!!
+        ?>
+    </div>
+</div>
+<!-- <div style="position:relative;">
     <canvas id="myChart" style="max-width:400px;left:0"></canvas>
     <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
-</div>
+</div> -->
 
 </body>
 <script>
@@ -166,7 +241,6 @@ else if (hourNow < 24){
   greeting = "Good evening";
   icon = "moon-o";
   color="rgb(95,95,95)";
-
 }
 else {
   greeting = "Welcome";
