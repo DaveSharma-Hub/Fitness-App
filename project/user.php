@@ -4,7 +4,7 @@
     $username = $_POST["uname"];
     $password = $_POST["psw"];
 
-    echo $username." ".$password;
+    // echo $username." ".$password;
     $_SESSION['login'] = $username;
     header('Location: userMenu.php');
 ?>
