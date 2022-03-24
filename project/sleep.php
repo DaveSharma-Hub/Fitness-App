@@ -192,7 +192,7 @@ tr:nth-child(even) {
 <body onload="startTime()">
 <div class="topnav">
   <a href="#contact">Logout</a>
-  <a href="#news">My Account</a>
+  <a href="myAccount.php">My Account</a>
   <a class="active" href="#home">Home</a>
 </div>
 <main class="container" id="mainContainer">
