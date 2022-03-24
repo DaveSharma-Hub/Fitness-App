@@ -2,6 +2,9 @@
     //include 'user.php';
     session_start();
     $username = $_SESSION['login'];
+    if($username==null){
+      header('Location: login.html');
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,7 +17,6 @@
 <style>
 body{
     background-color:white;
-    font-family: 'Quicksand', cursive;
 }
 .topnav {
   margin-left:5%;
@@ -22,15 +24,6 @@ body{
   overflow: hidden;
   background-color: rgb(82,16,238);
   border-radius:10px;
-}
-canvas {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    width: 80%;
-    float:right;
 }
 
 .topnav a {
@@ -51,6 +44,8 @@ canvas {
   background-color: rgb(204,0,102);
   color: white;
 }
+
+
 
 
 #mySidenav a {
@@ -120,6 +115,29 @@ canvas {
     font-size: 2em;
     color: #666;
 }
+.column {
+    float: left;
+    align-items: center;
+    height: 10vh;
+    font-family: 'Quicksand', cursive;
+}
+
+.left {
+  width: 30%;
+  background-color:  #BFFCC6;
+}
+
+.right {
+  width: 70%;
+  background-color: #DBFFD6;
+}
+
+.edit{ 
+    padding: 12px;
+    width: 300px;
+}
+
+
 /* Bordered form */
 form {
   border: 3px solid #f1f1f1;
@@ -212,70 +230,12 @@ button:hover {
   to {transform: scale(1)}
 }
 
-.flip-card {
-  background-color: transparent;
-  width: 300px;
-  height: 300px;
-  border: none;
-  perspective: 1000px; /* Remove this if you don't want the 3D effect */
-  font-family: 'Quicksand', cursive;
-
-}
-
-/* This container is needed to position the front and back side */
-.flip-card-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-}
-
-/* Do an horizontal flip when you move the mouse over the flip box container */
-.flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-}
-
-/* Position the front and back side */
-.flip-card-front, .flip-card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  -webkit-backface-visibility: hidden; /* Safari */
-  backface-visibility: hidden;
-}
-
-/* Style the front side (fallback if image is missing) */
-.flip-card-front {
-  background-color: #8AACF0;
-  color: black;
-  border-radius:100px;
-}
-
-/* Style the back side */
-.flip-card-back {
-  background-color: #8AACF0;
-  color: white;
-  transform: rotateY(180deg);
-  border-radius:100px;
-
-}
-
-.recipes{
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-gap: 42px;
-}
-.textbox{
-  text-align: center;
-}
 </style>
 </head>
 <body onload="startTime()">
 <div class="topnav">
-  <a href="#contact">Logout</a>
-  <a href="myAccount.php">My Account</a>
+  <a href="#">Logout</a>
+  <a href="#news">My Account</a>
   <a class="active" href="#home">Home</a>
 </div>
 <main class="container" id="mainContainer">
@@ -294,109 +254,137 @@ button:hover {
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+<h1 style = "text-align:center"> About Me </h1>
+
+<div class="outside">
+    <div class="title">
+        <button onclick="document.getElementById('id01').style.display='block'" >Edit Info</button>
+    </div>
 </div>
-<div class = "textbox">
-  <h1>Your Daily Calorie Intake is:</h1>
-  <h2>2678 cal</h2>
-</div>
-<!-- Button to open the modal login form -->
-<button onclick="document.getElementById('id01').style.display='block'">Add Breakfast</button>
-<button onclick="document.getElementById('id01').style.display='block'">Add Lunch</button>
-<button onclick="document.getElementById('id01').style.display='block'">Add Dinner</button>
-<!-- The Modal -->
+
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'"
 class="close" title="Close Modal">&times;</span>
-  <!-- Modal Content -->
+
   <form class="modal-content animate">
     <div class="modal-container">
-      Food Item:<input type="text" placeholder="ex: Pizza" name="psw" required><br>
-      Calories(cal):<input type="text" placeholder="ex: 250" name="psw" required><br>
-      Sugar(g): <input type="text" placeholder="ex: 76" name="psw" required><br>
-      Fat(g): <input type="text" placeholder="ex: 34" name="psw" required><br>
-      Protien(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
-      Carbohydrates(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
-      Sodium(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
-      <button type="submit">Add Food Item</button>
+      Full Name<input type="text" placeholder="John Doe" name="psw" required><br>
+      Email<input type="text" placeholder="john@gmail.com" name="psw" required><br>
+      Password<input type="password" placeholder="********" name="psw" required><br>
+      Gender<input type="text" placeholder="Male" name="psw" required><br>
+      Phone<input type="text" placeholder="123-456-7890" name="psw" required><br>
+      Address<input type="text" placeholder="12345 Sesame Street" name="psw" required><br>
+      <button type="submit">Save</button>
+    </div>
+    <div>
+      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
     </div>
   </form>
 </div>
 
-<div>
-  <canvas id = myChart></canvas>
-  <canvas id = myChart2></canvas>
-</div>
-<h1>Recipes:</h1>
-<div class = "recipes">
-  <?php
-  for($i=0;$i<12;$i++){
-  echo "<div class='flip-card'>
-    <div class='flip-card-inner'>
-      <div class='flip-card-front'>
-        <h1>Vegan Pizza</h1>
-        <img src='https://cdn.loveandlemons.com/wp-content/uploads/2018/09/vegan-pizza.jpg' style='width:300px;height:250px;'>
-      </div>
-      <div class='flip-card-back'>
-        <h1>Recipe:</h1>
-        <p>1.Roll out pizza dough</p>
-        <p>2. Add pizza sauce evenly on dough</p>
-        <p>3.Sprinkle on top cheese</p>
-        <p>4.Add vegetables and toppings as desired</p>
-        <p>5.Bake in oven for 30 minutes</p>
-      </div>
+
+<div class = "info">
+    <div class="row">
+    <div class="column left">
+        <h2>Full Name</h2>
     </div>
-  </div>";
-  }
-  ?>
+    <div class="column right">
+        <h3>John Doe</h3>
+    </div>
+
+    <div class="row">
+    <div class="column left">
+        <h2>Email</h2>
+    </div>
+    <div class="column right">
+        <h3>john@gmail.com</h3>
+    </div>
+
+    <div class="row">
+    <div class="column left">
+        <h2>Password</h2>
+    </div>
+    <div class="column right">
+        <h3>********</h3>
+    </div>
+
+    <div class="row">
+    <div class="column left">
+        <h2>Gender</h2>
+    </div>
+    <div class="column right">
+        <h3>Male</h3>
+    </div>
+
+    <div class="row">
+    <div class="column left">
+        <h2>Phone</h2>
+    </div>
+    <div class="column right">
+        <h3>123-456-7890</h3>
+    </div>
+
+    <div class="row">
+    <div class="column left">
+        <h2>Address</h2>
+    </div>
+    <div class="column right">
+        <h3>12345 Sesame Street</h3>
+    </div>
 </div>
+
+
 </body>
 <script>
-var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
-var yValues = [55, 49, 44, 24, 60];
-var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-];
+var today = new Date();
+var hourNow = today.getHours();
+var greeting;
+var icon;
+var rn = today.toTimeString();
+var msg = "\nCurrent time is ";//+":"today.minutes();
+msg = msg.concat(rn);
+var color;
+if (hourNow < 12){
+  greeting = "Good Morning";
+  icon = "coffee";
+  color="rgb(232,232,232)";
+}
+else if (hourNow < 20){
+  greeting = 'Good afternoon!';
+  icon = "sun-o";
+  color="rgb(156,156,156)";
+}
+else if (hourNow < 24){
+  greeting = "Good evening";
+  icon = "moon-o";
+  color="rgb(95,95,95)";
 
-new Chart("myChart", {
-  type: "pie",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Your Overall Diet"
-    }
-  }
-});
-var xValues = [50,60,70,80,90,100,110,120,130,140,150];
-var yValues = [7,8,8,9,9,9,10,11,14,14,15];
-new Chart("myChart2", {
-  type: "line",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: "rgba(0,0,0,1.0)",
-      borderColor: "rgba(0,0,0,0.1)",
-      data: yValues
-    }]
-  },
-  options:{
-      title: {
-      display: true,
-      text: "Your Overall Diet"
-    }
-  }
-});
+}
+else {
+  greeting = "Welcome";
+}
+
+document.getElementById("col-1").innerHTML = "<h3>" + greeting + " </h1>";
+
+document.getElementById("icon").innerHTML = ('<i class="fa fa-' + icon + '" aria-hidden="true"></i>');
+// document.getElementById("mainContainer").backgroundColor =color;
+document.getElementById("mainContainer").backgroundImage="linear-gradient(to right, red , yellow);"
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
+
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
 </script>
+
 </html> 
