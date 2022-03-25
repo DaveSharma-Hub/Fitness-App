@@ -47,8 +47,6 @@ body{
   background-color: rgb(204,0,102);
   color: white;
 }
-
-
 #mySidenav a {
   padding-top:100px;
   position: absolute;
@@ -80,7 +78,6 @@ body{
   top: 140px;
   background-color: #f44336;
 }
-
 #contact {
   top: 200px;
   background-color: #555
@@ -91,8 +88,10 @@ body{
  align-items: center;
  height: 10vh;
  font-family: 'Quicksand', cursive;
- font-size: 2em;
+ font-size: 1em;
  color: #666;
+ background:none;
+ border:none;
 }
 .fa{
   margin-left: 20px;
@@ -104,7 +103,7 @@ body{
  align-items: center;
  height: 10vh;
  font-family: 'Quicksand', cursive;
- font-size: 2em;
+ font-size: 1em;
  color: #666;
 }
 .welcome{
@@ -198,21 +197,23 @@ body{
 .userInfo{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:20%;
+    width:28%;
     margin:0 auto;
+    padding-left:8%;
 }
 
 button {
     display:inline-block;
-    background-color:#4287f5;
-    padding:10px;
+    background-color:#424bf5;
+    padding:15px;
     border-radius:10px;
     color:white;
-    border-width:none;
+    border:none;
+    margin:5px;
 }
 
 button:hover{
-    background-color:#4542f5;
+    background-color:#c842f5;
 }
 
 .insideI{
@@ -222,6 +223,11 @@ button:hover{
     background-color:rgb(255,255,255,1);
     margin:0 auto;
     overflow-y:auto;
+    border:none;
+}
+
+form{
+  background-color:blue;
 }
 </style>
 </head>
@@ -248,8 +254,9 @@ button:hover{
 </div>
 
 <div class="userInfo">
+  <h2>Change Instructor Information</h2>
 <?php
-  for($j=0;$j<4;$j++){
+  for($j=0;$j<5;$j++){
     echo "<button onclick=\"document.getElementById('id01').style.display='block'\">View Instructor".$j."</button>
     <!-- The Modal -->
     <div id='id01' class='modal'>
@@ -257,9 +264,9 @@ button:hover{
     class=\"close\" title=\"Close Modal\">&times;</span>
     <div class='insideI'>
         <h1>Instructor".$j."</h1>
-        <form class='modal-content animate' action='/action_page.php'>
+    <form class='modal-content animate' action='/action_page.php'>
 
-    <div class='container'>
+    <div class='container' style='border-color:blue;'>
       <label for='uname'><b>Username</b></label>
       <input type='text' placeholder='Enter Username' name='uname' required>
 
