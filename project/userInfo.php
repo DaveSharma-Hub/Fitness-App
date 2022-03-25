@@ -47,8 +47,6 @@ body{
   background-color: rgb(204,0,102);
   color: white;
 }
-
-
 #mySidenav a {
   padding-top:100px;
   position: absolute;
@@ -91,8 +89,10 @@ body{
  align-items: center;
  height: 10vh;
  font-family: 'Quicksand', cursive;
- font-size: 2em;
+ font-size: 1em;
  color: #666;
+ background:none;
+ border:none;
 }
 .fa{
   margin-left: 20px;
@@ -104,7 +104,7 @@ body{
  align-items: center;
  height: 10vh;
  font-family: 'Quicksand', cursive;
- font-size: 2em;
+ font-size: 1em;
  color: #666;
 }
 .welcome{
@@ -194,6 +194,37 @@ body{
   from {transform: scale(0)}
   to {transform: scale(1)}
 }
+
+.userInfo{
+    background-color:rgb(0,0,0,0.1);
+    border-radius:10px;
+    width:28%;
+    margin:0 auto;
+    padding-left:8%;
+}
+
+button {
+    display:inline-block;
+    background-color:#424bf5;
+    padding:15px;
+    border-radius:10px;
+    color:white;
+    border:none;
+    margin:5px;
+}
+
+button:hover{
+    background-color:#c842f5;
+}
+
+.insideI{
+    border-radius:10px;
+    width:50%;
+    height:50%;
+    background-color:rgb(255,255,255,1);
+    margin:0 auto;
+    overflow-y:auto;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -218,21 +249,35 @@ body{
   <a href="diet.php" id="projects">Diet</a> -->
 </div>
 
-
+<div class="userInfo">
+  <h2>Change User Information</h2>
 <?php
-  for($j=0;$j<4;$j++){
-    echo "<button onclick='document.getElementById('id01').style.display='block''>Login</button>
+  for($j=0;$j<5;$j++){
+    echo "<button onclick=\"document.getElementById('id01').style.display='block'\">View User".$j."</button>
     <!-- The Modal -->
     <div id='id01' class='modal'>
-    <span onclick='document.getElementById('id01').style.display='none''
-    class='close' title='Close Modal'>&times;</span>
-    <form class='modal-content animate' action='/action_page.php'>
-    </form>
+    <span onclick=\"document.getElementById('id01').style.display='none'\"
+    class=\"close\" title=\"Close Modal\">&times;</span>
+    <div class='insideI'>
+        <h1>User ".$j."</h1>
+        <form class='modal-content animate' action='/action_page.php'>
+
+    <div class='container'>
+      <label for='uname'><b>Username</b></label>
+      <input type='text' placeholder='Enter Username' name='uname' required>
+
+      <label for='psw'><b>Password</b></label>
+      <input type='password' placeholder='Enter Password' name='psw' required>
+
+      <button type='submit'>Update</button>
+    </div>
+  </form>
+    </div>
     </div>";
    // <!-- Modal Content -->
   }
-
 ?>
+</div>
 
 </body>
 <script>

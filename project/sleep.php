@@ -191,7 +191,7 @@ tr:nth-child(even) {
 </head>
 <body onload="startTime()">
 <div class="topnav">
-  <a href="#contact">Logout</a>
+  <a href="login.html">Logout</a>
   <a href="myAccount.php">My Account</a>
   <a class="active" href="#home">Home</a>
 </div>
