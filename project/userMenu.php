@@ -123,6 +123,15 @@ body{
     font-size: 2em;
     color: #666;
 }
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 100%;
+    float:right;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -147,9 +156,9 @@ body{
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+<div style="width:90%;margin:0 auto;">
+    <canvas id="myChart" style="max-width:600px;left:0"></canvas>
+    <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
 </div>
 
 </body>

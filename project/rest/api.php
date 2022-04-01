@@ -1,5 +1,11 @@
 <?php
 header("Content-Type:application/json");
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 if (isset($_GET['userID']) && $_GET['userID']!="") {
 	include('db.php');
 	$order_id = $_GET['userID'];
@@ -31,7 +37,41 @@ if (isset($_GET['userID']) && $_GET['userID']!="") {
 // 	response(NULL, NULL, 400,"Invalid Request");
 // 	}
 
+if (isset($_GET['sleepUID']) && $_GET['sleepUID']!="") {
+	include('db.php');
+	$order_id = $_GET['sleepUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM sleep_tracker WHERE UID=?");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $max = 0;
+    $slept = 0;
+    if($stmt_result->num_rows>0){
+       
+        while($row = $stmt_result->fetch_array()){
+            // $amount = $row['Fname'];
+            // $response_code = $row['Lname'];
+            // $email = $row['Email'];
+            // $username = $row['Username'];
+            // $response_desc = $row['Age'];
+            if($row['SID']>=$max){
+                    $slept = $row['hours_slept'];
+                    $max = $row['SID'];
+            }
+        }
+    }
 
+    if($max!=0 &&$slept!=0){
+        responseSleep($max,$slept);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
 
 if (isset($_GET['userLogin']) && $_GET['userLogin']!="" && isset($_GET['pass']) && $_GET['pass']!="") {
 	include('db.php');
@@ -129,7 +169,13 @@ isset($_GET['fname']) && $_GET['fname']!="" &&isset($_GET['lname']) && $_GET['ln
         $response['Age'] = $response_desc;
         $response['Email'] = $email;
         $response['Username'] = $username;
-        
+
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseSleep($max,$slept){
+        //$response['max'] = $max;
+        $response['hours_slept'] = $slept;
         $json_response = json_encode($response);
         echo $json_response;
     }
