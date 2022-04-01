@@ -1,7 +1,15 @@
 <?php
     //include 'user.php';
+    // session_start();
+    // $username = $_SESSION['login'];
     session_start();
-    $username = $_SESSION['login'];
+    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    $url = "http://localhost:5000/api.php?userID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,6 +19,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -67,7 +77,7 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 80%;
+    width: 100%;
     float:right;
 }
 
@@ -184,23 +194,21 @@ tr:nth-child(even) {
     color: #666;
 }
 
-
-
-
 </style>
 </head>
-<body onload="startTime()">
+<input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
+<body onload="pieChartInfo()">
 <div class="topnav">
   <a href="login.html">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $username ?></h3>
+  <h3>Sleep Tracker for <?php echo $result->Fname." ".$result->Lname ?></h3>
 </div>
 <div id="txt"></div>
 
@@ -210,7 +218,10 @@ tr:nth-child(even) {
   <a href="diet.php" id="projects">Diet</a>
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
-
+<div style="width:90%;margin:0 auto;">
+    <canvas id="weeklySleepChart" style="max-width:700px;left:0"></canvas>
+    <canvas id="hoursSlept" style="max-width:350px;left:0"></canvas>
+</div>
 <div class = "sleep"> 
     <form action="action_page.php" method="post">
         <label for="sleeptime"><b>Sleep Time</b></label>
@@ -264,10 +275,7 @@ tr:nth-child(even) {
   </tr>
 </table>
 
-<div style="margin:0 13%;">
-    <canvas id="weeklySleepChart" style="max-width:500px;left:0"></canvas>
-    <canvas id="hoursSlept" style="max-width:500px;left:0"></canvas>
-</div>
+
 
 <script>
 
@@ -290,29 +298,86 @@ tr:nth-child(even) {
         }
     }
     });
+var json;//={"hours_slept":7};
 
-    var xHours = ["Percentage of Hours Slept", "Percentage of Remaining Hours for Recommended"];
-    var yValues = [5/8*100, (1-5/8)*100];
-    var barColors = [
-        "#b91d47",
-        "#00aba9",
-    ];
-    new Chart("hoursSlept", {
-    type: "doughnut",
-    data: {
-        labels: xHours,
-        datasets: [{
-        data: yValues,
-        backgroundColor: barColors
-        }]
-    },
-    options: {
-        title: {
-            display: true,
-            text: "Percentage of Hours Slept in a Day"
-        }
-    }
-    });
+// console.log(data);
+var id = document.getElementById("custId").value;
+function pieChartInfo(){
+  
+  //   const xmlhttp = new XMLHttpRequest();
+  //   xmlhttp.onload = function() {
+  //     json=this.responseText;
+  //   }
+  // xmlhttp.open("GET", "http://localhost:5000/api.php?sleepUID="+id);
+  // xmlhttp.send();
+    $.ajax({
+          url: "http://localhost:5000/api.php?sleepUID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.hours_slept;
+              });;
+              var xHours = ["Percentage of Hours Slept", "Percentage of Remaining Hours for Recommended"];
+              var yValues = [data/8*100,(1-(data/8))*100];
+              var barColors = [
+                  "#b91d47",
+                  "#00aba9",
+              ];
+              new Chart("hoursSlept", {
+              type: "doughnut",
+              data: {
+                  labels: xHours,
+                  datasets: [{
+                  data: yValues,
+                  backgroundColor: barColors
+                  }]
+              },
+              options: {
+                  title: {
+                      display: true,
+                      text: "Percentage of Hours Slept in a Day"
+                  }
+              }
+              });
+          }
+      });
+}
+// var data;
+//  console.log(json);
+// if(json!=null){
+//     data = [json].map(function(e) {
+//     return e.hours_slept;
+//   });;
+// }
+// if(data==null){
+//   data = 0;
+// }
+    // var xHours = ["Percentage of Hours Slept", "Percentage of Remaining Hours for Recommended"];
+    // var yValues = [data/8*100,(1-(data/8))*100];
+    // var barColors = [
+    //     "#b91d47",
+    //     "#00aba9",
+    // ];
+    // new Chart("hoursSlept", {
+    // type: "doughnut",
+    // data: {
+    //     labels: xHours,
+    //     datasets: [{
+    //     data: yValues,
+    //     backgroundColor: barColors
+    //     }]
+    // },
+    // options: {
+    //     title: {
+    //         display: true,
+    //         text: "Percentage of Hours Slept in a Day"
+    //     }
+    // }
+    // });
 
 </script>
 

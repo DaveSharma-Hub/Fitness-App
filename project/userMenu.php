@@ -1,12 +1,13 @@
 <?php
     //include 'user.php';
-     session_start();
+    //  session_start();
     // $username = $_SESSION['login'];
     // if($username==null){
     //   header('Location: login.html');
     // }
     
-    
+    //include 'session.php';
+    session_start();
     $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
     $url = "http://localhost:5000/api.php?userID=".$id;
 	
@@ -122,13 +123,22 @@ body{
     font-size: 2em;
     color: #666;
 }
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 100%;
+    float:right;
+}
 </style>
 </head>
 <body onload="startTime()">
 <div class="topnav">
   <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
@@ -146,9 +156,9 @@ body{
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+<div style="width:90%;margin:0 auto;">
+    <canvas id="myChart" style="max-width:600px;left:0"></canvas>
+    <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
 </div>
 
 </body>
