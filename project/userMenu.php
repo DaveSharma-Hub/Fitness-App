@@ -1,12 +1,13 @@
 <?php
     //include 'user.php';
-     session_start();
+    //  session_start();
     // $username = $_SESSION['login'];
     // if($username==null){
     //   header('Location: login.html');
     // }
     
-    
+    //include 'session.php';
+    session_start();
     $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
     $url = "http://localhost:5000/api.php?userID=".$id;
 	
@@ -128,7 +129,7 @@ body{
 <div class="topnav">
   <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>

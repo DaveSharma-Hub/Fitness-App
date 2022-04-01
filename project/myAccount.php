@@ -1,10 +1,18 @@
 <?php
     //include 'user.php';
+    // session_start();
+    // $username = $_SESSION['login'];
+    // if($username==null){
+    //   header('Location: login.html');
+    // }
     session_start();
-    $username = $_SESSION['login'];
-    if($username==null){
-      header('Location: login.html');
-    }
+    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    $url = "http://localhost:5000/api.php?userID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,9 +52,6 @@ body{
   background-color: rgb(204,0,102);
   color: white;
 }
-
-
-
 
 #mySidenav a {
   padding-top:100px;
@@ -234,16 +239,16 @@ button:hover {
 </head>
 <body onload="startTime()">
 <div class="topnav">
-  <a href="#">Logout</a>
-  <a href="#news">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a href="login.php">Logout</a>
+  <a href="">My Account</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $username ?></h3>
+  <h3>Welcome <?php echo $result->Fname." ".$result->Lname ?></h3>
 </div>
 <div id="txt"></div>
 
@@ -265,15 +270,13 @@ button:hover {
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'"
 class="close" title="Close Modal">&times;</span>
-
-  <form class="modal-content animate">
+  <form class="modal-content animate" action="" method="post">
     <div class="modal-container">
-      Full Name<input type="text" placeholder="John Doe" name="psw" required><br>
-      Email<input type="text" placeholder="john@gmail.com" name="psw" required><br>
+      Full Name<input type="text" placeholder=<?php echo $result->Fname." ".$result->Lname?> name="psw" required><br>
+      Email<input type="text" placeholder=<?php echo $result->Email?> name="psw" required><br>
       Password<input type="password" placeholder="********" name="psw" required><br>
-      Gender<input type="text" placeholder="Male" name="psw" required><br>
-      Phone<input type="text" placeholder="123-456-7890" name="psw" required><br>
-      Address<input type="text" placeholder="12345 Sesame Street" name="psw" required><br>
+      Age<input type="text" placeholder=<?php echo $result->Age?> name="psw" required><br>
+      Username<input type="text" placeholder=<?php echo $result->Username?> name="psw" required><br>
       <button type="submit">Save</button>
     </div>
     <div>
@@ -289,7 +292,7 @@ class="close" title="Close Modal">&times;</span>
         <h2>Full Name</h2>
     </div>
     <div class="column right">
-        <h3>John Doe</h3>
+        <h3><?php echo $result->Fname." ".$result->Lname?></h3>
     </div>
 
     <div class="row">
@@ -297,7 +300,7 @@ class="close" title="Close Modal">&times;</span>
         <h2>Email</h2>
     </div>
     <div class="column right">
-        <h3>john@gmail.com</h3>
+        <h3><?php echo $result->Email?></h3>
     </div>
 
     <div class="row">
@@ -310,26 +313,18 @@ class="close" title="Close Modal">&times;</span>
 
     <div class="row">
     <div class="column left">
-        <h2>Gender</h2>
+        <h2>Age</h2>
     </div>
     <div class="column right">
-        <h3>Male</h3>
+        <h3><?php echo $result->Age?></h3>
     </div>
 
     <div class="row">
     <div class="column left">
-        <h2>Phone</h2>
+        <h2>Username</h2>
     </div>
     <div class="column right">
-        <h3>123-456-7890</h3>
-    </div>
-
-    <div class="row">
-    <div class="column left">
-        <h2>Address</h2>
-    </div>
-    <div class="column right">
-        <h3>12345 Sesame Street</h3>
+        <h3><?php echo $result->Username?></h3>
     </div>
 </div>
 
