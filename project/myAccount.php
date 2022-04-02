@@ -234,7 +234,10 @@ button:hover {
   from {transform: scale(0)}
   to {transform: scale(1)}
 }
-
+.info{
+  width:50%;
+  margin:0 auto;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -261,11 +264,11 @@ button:hover {
 
 <h1 style = "text-align:center"> About Me </h1>
 
-<div class="outside">
+<!-- <div class="outside">
     <div class="title">
         <button onclick="document.getElementById('id01').style.display='block'" >Edit Info</button>
     </div>
-</div>
+</div> -->
 
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'"
@@ -287,6 +290,11 @@ class="close" title="Close Modal">&times;</span>
 
 
 <div class = "info">
+  <div class="outside">
+      <div class="title">
+          <button onclick="document.getElementById('id01').style.display='block'" >Edit Info</button>
+      </div>
+  </div>
     <div class="row">
     <div class="column left">
         <h2>Full Name</h2>
