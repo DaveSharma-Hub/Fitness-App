@@ -2,9 +2,9 @@
     //include 'user.php';
     session_start();
     $username = $_SESSION['login'];
-    if($username==null){
-      header('Location: login.html');
-    }
+    // if($username==null){
+    //   header('Location: login.html');
+    // }
 ?>
 <!DOCTYPE html>
 <html>
@@ -126,10 +126,10 @@ body{
     font-family: 'Quicksand', cursive;
     font-size: 1.5em;
     width:25%;
-    background-color:green;
+    background-color:#BFFCC6;
     padding:5px;
     border-radius:10px;
-    color:white;
+    color:black;
 }
 .right{
     float:right;
@@ -146,10 +146,10 @@ body{
     font-family: 'Quicksand', cursive;
     font-size: 1em;
     width:auto;
-    background-color:green;
+    background-color:#BFFCC6;
     padding:5px;
     border-radius:10px;
-    color:white;
+    color:black;
 }
 .rightThem{
     float:right;
