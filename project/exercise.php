@@ -1,7 +1,15 @@
 <?php
     //include 'user.php';
+    // session_start();
+    // $username = $_SESSION['login'];
     session_start();
-    $username = $_SESSION['login'];
+    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    $url = "http://localhost:5000/api.php?userID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -11,6 +19,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -276,7 +286,9 @@ canvas {
 }
 </style>
 </head>
-<body onload="startTime()">
+<input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
+
+<body onload="start()">
 <div class="sticky">
     <div class="topnav">
     <a href="login.html">Logout</a>
@@ -288,7 +300,7 @@ canvas {
     <div id="col-2"><div id="icon">
     </main>
     <div class="welcome">
-    <h3><?php echo $username ?>'s Exercise Tracker</h3>
+    <h3><?php echo $result->Fname." ".$result->Lname ?>'s Exercise Tracker</h3>
     </div>
     <div id="txt"></div>
 
@@ -315,9 +327,9 @@ canvas {
     </div>
 </div>
 <div class="charts">
-  <div style="position:relative; z-index=-2;">
-      <canvas id="myChart" style="max-width:600px;left:0"></canvas>
-      <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
+  <div style="position:relative; z-index=-2;width:90%;margin:0 auto;">
+      <canvas id="myChart" style="max-width:350px;left:0"></canvas>
+      <canvas id="myChart2" style="max-width:800px;left:0"></canvas>
   </div>
 </div>
 <div id="id01" class="modal">
@@ -452,6 +464,9 @@ canvas {
 </div>
 </body>
 <script>
+
+var id = document.getElementById("custId").value;
+
 var today = new Date();
 var hourNow = today.getHours();
 var greeting;
@@ -549,56 +564,123 @@ new Chart("myChart", {
     }
   }
 });
-var xValues = [50,60,70,80,90,100,110,120,130,140,150];
-var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+// var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+// var yValues = [7,8,8,9,9,9,10,11,14,14,15];
 
-new Chart("myChart2", {
-  type: "line",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: "rgba(0,0,0,1.0)",
-      borderColor: "rgba(0,0,0,0.1)",
-      data: yValues
-    }]
-  },
-  options:{
-      title: {
-      display: true,
-      text: "Your Overall Calories Change"
-    }
-  }
-});
+// new Chart("myChart2", {
+//   type: "line",
+//   data: {
+//     labels: xValues,
+//     datasets: [{
+//       backgroundColor: "rgba(0,0,0,1.0)",
+//       borderColor: "rgba(0,0,0,0.1)",
+//       data: yValues
+//     }]
+//   },
+//   options:{
+//       title: {
+//       display: true,
+//       text: "Your Overall Calories Change"
+//     }
+//   }
+// });
 
 // Set the date we're counting down to
 
-var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+// var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+// // Update the count down every 1 second
+// var x = setInterval(function() {
 
-  // Get today's date and time
-  var now = new Date().getTime();
+//   // Get today's date and time
+//   var now = new Date().getTime();
 
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
+//   // Find the distance between now and the count down date
+//   var distance = countDownDate - now;
 
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+//   // Time calculations for days, hours, minutes and seconds
+//   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+//   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+//   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+//   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  // Display the result in the element with id="demo"
-  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-  + minutes + "m " + seconds + "s ";
+//   // Display the result in the element with id="demo"
+//   document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+//   + minutes + "m " + seconds + "s ";
 
-  // If the count down is finished, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("demo").innerHTML = "EXPIRED";
-  }
-}, 1000);
+//   // If the count down is finished, write some text
+//   // if (distance < 0) {
+//   //   clearInterval(x);
+//   //   document.getElementById("demo").innerHTML = "EXPIRED";
+//   // }
+// }, 1000);
 
+function scatterPlot(){
+  $.ajax({
+          url: "http://localhost:5000/api.php?exerciseCalorieUID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.time;
+              });;
+               var data2 = [res].map(function(e) {
+                    return e.cal;
+              });;
+               console.log(data[0]);
+               console.log(data2[0]);
+              new Chart("myChart2", {
+                type: "line",
+                data: {
+                  labels: data[0],
+                  datasets: [{
+                    backgroundColor: "rgba(100,9,50,1.0)",
+                    borderColor: "rgba(0,0,0,0.1)",
+                    data: data2[0]
+                  }]
+                },
+                options:{
+                    title: {
+                    display: true,
+                    text: "Your Overall Calories Change"
+                  },
+                  scales: {
+                        yAxes: [{
+                                display: true,
+                                ticks: {
+                                    // beginAtZero: true,
+                                    // steps: 50,
+                                    // stepValue: 20,
+                                    // max: 1000
+                                    suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+                                    // OR //
+                                    beginAtZero: true   // minimum value will be 0.
+                                },
+                                scaleLabel: {
+                                  display: true,
+                                  labelString: 'Calories'
+                                }
+                            }],
+                            xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                  display: true,
+                                  labelString: 'Time (min)'
+                                }
+                            }]
+                    }
+                }
+            });
+      }
+  });
+
+}
+function start(){
+  scatterPlot();
+  startTime();
+}
 </script>
 </html> 

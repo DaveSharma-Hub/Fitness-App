@@ -10,6 +10,22 @@
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
     $response = curl_exec($client);
     $result = json_decode($response);
+
+
+    $url = "http://localhost:5000/api.php?sleepScheduleUID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result2 = json_decode($response);
+
+    $url = "http://localhost:5000/api.php?sleepRecommendedUID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result3 = json_decode($response);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -197,9 +213,11 @@ tr:nth-child(even) {
 </style>
 </head>
 <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
-<body onload="pieChartInfo()">
+<body onload="start()">
+<!-- <body onload="pieChartInfo()"> -->
+
 <div class="topnav">
-  <a href="login.html">Logout</a>
+  <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
   <a class="active" href="userMenu.php">Home</a>
 </div>
@@ -255,53 +273,135 @@ tr:nth-child(even) {
   </tr>
   <tr>
     <td>Recommended Hours</td>
-    <td>8</td>
-    <td>8</td>
-    <td>8</td>
-    <td>8</td>
-    <td>8</td>
-    <td>8</td>
-    <td>8</td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
+    <td><?php echo $result3->time?></td>
   </tr>
   <tr>
     <td>Hours Slept</td>
-    <td>4</td>
-    <td>6</td>
-    <td>6</td>
-    <td>5</td>
-    <td>5.5</td>
-    <td>8</td>
-    <td>9</td>
+    <td><?php echo $result2->mon ?></td>
+    <td><?php echo $result2->tue ?></td>
+    <td><?php echo $result2->wed ?></td>
+    <td><?php echo $result2->thur ?></td>
+    <td><?php echo $result2->fri ?></td>
+    <td><?php echo $result2->sat ?></td>
+    <td><?php echo $result2->sun ?></td>
   </tr>
 </table>
 
 
 
 <script>
+var id = document.getElementById("custId").value;
 
     var xDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    new Chart("weeklySleepChart", {
-    type: "line",
-    data: {
-        labels: xDays,
-        datasets: [{
-        data: [4, 6, 6, 5, 5.5, 8, 9],
-        borderColor: "red",
-        fill: false
-        }]
-    },
-    options: {
-        legend: {display: false},
-        title: {
-            display: true,
-            text: "Weekly Sleep Hours"
-        }
-    }
-    });
-var json;//={"hours_slept":7};
+    
+    // new Chart("weeklySleepChart", {
+    // type: "line",
+    // data: {
+    //     labels: xDays,
+    //     datasets: [{
+    //     data: [4, 6, 6, 5, 5.5, 8, 9],
+    //     borderColor: "red",
+    //     fill: false
+    //     }]
+    // },
+    // options: {
+    //     legend: {display: false},
+    //     title: {
+    //         display: true,
+    //         text: "Weekly Sleep Hours"
+    //     }
+    // }
+    // });
+    
+
+  function scatterChartInfo(){
+  
+  //   const xmlhttp = new XMLHttpRequest();
+  //   xmlhttp.onload = function() {
+  //     json=this.responseText;
+  //   }
+  // xmlhttp.open("GET", "http://localhost:5000/api.php?sleepUID="+id);
+  // xmlhttp.send();
+    $.ajax({
+          url: "http://localhost:5000/api.php?sleepScheduleUID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.mon;
+              });;
+               data2 = [res].map(function(e) {
+                    return e.tue;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.wed;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.thur;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.fri;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.sat;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.sun;
+              });;
+              data.push(data2[0]);
+              // var arr = [4, 6, 6, 5, 5.5, 8, 9];
+              //console.log(arr);
+              // console.log(data);
+              new Chart("weeklySleepChart", {
+                type: "line",
+                data: {
+                    labels: xDays,
+                    datasets: [{
+                    data: data,//[4, 6, 6, 5, 5.5, 8, 9],
+                    borderColor: "red",
+                    fill: false
+                    }]
+                },
+                options: {
+                    legend: {display: false},
+                    title: {
+                        display: true,
+                        text: "Weekly Sleep Hours"
+                    },
+                    scales: {
+                        yAxes: [{
+                                display: true,
+                                ticks: {
+                                    beginAtZero: true,
+                                    steps: 9,
+                                    stepValue: 1,
+                                    max: 10
+                                }
+                            }]
+                    } 
+                }
+              });
+              
+          }
+      });
+}
+// var json;//={"hours_slept":7};
 
 // console.log(data);
-var id = document.getElementById("custId").value;
 function pieChartInfo(){
   
   //   const xmlhttp = new XMLHttpRequest();
@@ -379,6 +479,10 @@ function pieChartInfo(){
     // }
     // });
 
+function start() {
+  pieChartInfo();
+  scatterChartInfo();
+}
 </script>
 
 </html> 
