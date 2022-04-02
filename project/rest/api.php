@@ -73,6 +73,123 @@ if (isset($_GET['sleepUID']) && $_GET['sleepUID']!="") {
     }
 }
 
+if (isset($_GET['sleepScheduleUID']) && $_GET['sleepScheduleUID']!="") {
+	include('db.php');
+	$order_id = $_GET['sleepScheduleUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM weekSleepSchedule WHERE UID=?");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $max = 0;
+    $mon = 0;
+    $tue = 0;
+    $wed = 0;
+    $thur = 0;
+    $fri = 0;
+    $sat = 0;
+    $sun = 0;
+    if($stmt_result->num_rows>0){
+       
+        while($row = $stmt_result->fetch_array()){
+            // $amount = $row['Fname'];
+            // $response_code = $row['Lname'];
+            // $email = $row['Email'];
+            // $username = $row['Username'];
+            // $response_desc = $row['Age'];
+            if($row['ID']>=$max){
+                    $mon = $row['monday'];
+                    $tue = $row['tuesday'];
+                    $wed = $row['wednesday'];
+                    $thur = $row['thursday'];
+                    $fri = $row['friday'];
+                    $sat = $row['saturday'];
+                    $sun = $row['sunday'];
+                    $max = $row['ID'];
+            }
+        }
+    }
+    if($max!=0 &&$mon!=0&&$tue!=0&&$wed!=0&&$thur!=0&&$fri!=0&&$sat!=0&&$sun!=0){
+        responseSleepSchedule($max,$mon,$tue,$wed,$thur,$fri,$sat,$sun);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
+if (isset($_GET['sleepRecommendedUID']) && $_GET['sleepRecommendedUID']!="") {
+	include('db.php');
+	$order_id = $_GET['sleepRecommendedUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM sleep_schedule,sleep_tracker WHERE sleep_tracker.UID=? AND
+    sleep_tracker.SID=sleep_schedule.SID");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $max = 0;
+    $time = 0;
+    
+    if($stmt_result->num_rows>0){
+       
+        while($row = $stmt_result->fetch_array()){
+            // $amount = $row['Fname'];
+            // $response_code = $row['Lname'];
+            // $email = $row['Email'];
+            // $username = $row['Username'];
+            // $response_desc = $row['Age'];
+            $time = $row['sleep_time'];
+        }
+    }
+    if($time!=0){
+        responseSleepScheduleRec($max,$time);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
+if (isset($_GET['exerciseCalorieUID']) && $_GET['exerciseCalorieUID']!="") {
+	include('db.php');
+	$order_id = $_GET['exerciseCalorieUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT calories_spent,timeSpent FROM exercise_tracker WHERE UID=?");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $max = 0;
+    $time = 0;
+    $cal=array();
+    $time=array();
+    if($stmt_result->num_rows>0){
+       
+         while($row = $stmt_result->fetch_array()){
+        //     // $amount = $row['Fname'];
+        //     // $response_code = $row['Lname'];
+        //     // $email = $row['Email'];
+        //     // $username = $row['Username'];
+        //     // $response_desc = $row['Age'];
+        //     $time = $row['sleep_time'];
+        // }
+        array_push($cal,$row['calories_spent']);
+        array_push($time,$row['timeSpent']);
+         }
+    }
+    if($time!=0 && $cal!=0){
+        responseExerciseCalorie($cal,$time);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
 if (isset($_GET['userLogin']) && $_GET['userLogin']!="" && isset($_GET['pass']) && $_GET['pass']!="") {
 	include('db.php');
 	$username = $_GET['userLogin'];
@@ -179,4 +296,29 @@ isset($_GET['fname']) && $_GET['fname']!="" &&isset($_GET['lname']) && $_GET['ln
         $json_response = json_encode($response);
         echo $json_response;
     }
+    function responseSleepSchedule($max,$mon,$tue,$wed,$thur,$fri,$sat,$sun){
+        //$response['max'] = $max;
+        $response['mon'] = $mon;
+        $response['tue']= $tue;
+        $response['wed']= $wed;
+        $response['thur']= $thur;
+        $response['fri']= $fri;
+        $response['sat']= $sat;
+        $response['sun']= $sun;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseSleepScheduleRec($max,$time){
+        //$response['max'] = $max;
+        $response['time'] = $time;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseExerciseCalorie($cal,$time){
+        $response['time'] = $time;
+        $response['cal'] = $cal;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
 ?>
