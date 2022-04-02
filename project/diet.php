@@ -1,7 +1,15 @@
 <?php
     //include 'user.php';
+    // session_start();
+    // $username = $_SESSION['login'];
     session_start();
-    $username = $_SESSION['login'];
+    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    $url = "http://localhost:5000/api.php?userID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -283,7 +291,7 @@ button:hover {
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $username ?></h3>
+  <h3>Welcome <?php echo $result->Fname." ".$result->Lname ?></h3>
 </div>
 <div id="txt"></div>
 
@@ -300,7 +308,14 @@ button:hover {
 </div>
 <div class = "textbox">
   <h1>Your Daily Calorie Intake is:</h1>
-  <h2>2678 cal</h2>
+  <?php
+    $url = "http://localhost:5000/api.php?dietCalID=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $cal_result = json_decode($response);
+    echo "<h1>".$cal_result->cal." cal</h1>";
+    ?>
 </div>
 <!-- Button to open the modal login form -->
 <button onclick="document.getElementById('id01').style.display='block'">Add Breakfast</button>
@@ -332,24 +347,27 @@ class="close" title="Close Modal">&times;</span>
 <h1>Recipes:</h1>
 <div class = "recipes">
   <?php
-  for($i=0;$i<12;$i++){
-  echo "<div class='flip-card'>
-    <div class='flip-card-inner'>
-      <div class='flip-card-front'>
-        <h1>Vegan Pizza</h1>
-        <img src='https://cdn.loveandlemons.com/wp-content/uploads/2018/09/vegan-pizza.jpg' style='width:300px;height:250px;'>
+    $url = "http://localhost:5000/api.php?dietID=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $card_result = json_decode($response);
+
+    for($i=0;$i<count($card_result->cal);$i++){
+    echo "<div class='flip-card'>
+      <div class='flip-card-inner'>
+        <div class='flip-card-front'>
+          <h1>".$card_result->name[$i]."</h1>
+          <img src='https://cdn.loveandlemons.com/wp-content/uploads/2018/09/vegan-pizza.jpg' style='width:300px;height:250px;'>
+        </div>
+        <div class='flip-card-back'>
+          <h1>".$card_result->steps[$i]."</h1>
+          <h1>".$card_result->ing[$i]."</h1>
+          <h1>".$card_result->cal[$i]." cal</h1>
+        </div>
       </div>
-      <div class='flip-card-back'>
-        <h1>Recipe:</h1>
-        <p>1.Roll out pizza dough</p>
-        <p>2. Add pizza sauce evenly on dough</p>
-        <p>3.Sprinkle on top cheese</p>
-        <p>4.Add vegetables and toppings as desired</p>
-        <p>5.Bake in oven for 30 minutes</p>
-      </div>
-    </div>
-  </div>";
-  }
+    </div>";
+    }
   ?>
 </div>
 </body>

@@ -219,6 +219,68 @@ if (isset($_GET['userLogin']) && $_GET['userLogin']!="" && isset($_GET['pass']) 
     }
 	
 }
+if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
+	include('db.php');
+	$id = $_GET['dietCalID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Diet_tracker where Diet_tracker.UID = ?");
+	//$result = mysqli_query($con,);
+	$stmt->bind_param("i",$id);
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $date = new DateTime();
+    $today = $date->format('Y-m-d');
+    $cal = 0;
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            if($row['dateDiet'] == $today){ 
+                $cal += $row['calories_intake'];
+            }
+        }
+    }
+    if($cal != 0){
+        responseCalories($cal);
+        mysqli_close($con);
+    }
+    else{
+        response(NULL, NULL, 200, "No Record Found");
+    }
+	
+}
+if (isset($_GET['dietID']) && $_GET['dietID']!="") {
+	include('db.php');
+	$id = $_GET['dietID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Recipes, Diet_tracker where Recipes.DID = Diet_tracker.DID AND Diet_tracker.UID = ?");
+	//$result = mysqli_query($con,);
+	$stmt->bind_param("i",$id);
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $cal = array();
+    $ing = array();
+    $steps = array();
+    $name = array();
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            // $steps = $row['steps'];
+            // $ingredients = $row['ingredients'];
+            // $calories = $row['calories'];
+            array_push($cal, $row['calories']);
+            array_push($ing, $row['ingredients']);
+            array_push($steps, $row['steps']);
+            array_push($name, $row['name']);
+        }
+    }
+    if($cal != 0 && $ing != 0 && $steps != 0 && $name != 0){
+        responseCard($cal, $ing, $steps, $name);
+        mysqli_close($con);
+    }
+    else{
+        response(NULL, NULL, 200, "No Record Found");
+    }
+	
+}
+
 // $url = "http://localhost:5000/api.php?userSignUp=".$username."&pass=".$password."&email=".$email
 //         ."&age=".$age."&gender=".$gender;
 // else{
@@ -316,6 +378,19 @@ isset($_GET['fname']) && $_GET['fname']!="" &&isset($_GET['lname']) && $_GET['ln
     }
     function responseExerciseCalorie($cal,$time){
         $response['time'] = $time;
+        $response['cal'] = $cal;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseCard($cal,$ing,$steps,$name){
+        $response['cal'] = $cal;
+        $response['ing']= $ing;
+        $response['steps']= $steps;
+        $response['name']= $name;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseCalories($cal){
         $response['cal'] = $cal;
         $json_response = json_encode($response);
         echo $json_response;

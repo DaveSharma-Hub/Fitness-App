@@ -6,7 +6,7 @@ if (isset($_POST['uname'])&&isset($_POST['psw']) && $_POST['uname']!="" && $_POS
         $password = $_POST["psw"];
         //echo $username." ".$password;
         $url = "http://localhost:5000/api.php?userLogin=".$username."&pass=".$password;
-        
+        //Call the phpinfo function.
         $client = curl_init($url);
         curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
         $response = curl_exec($client);
