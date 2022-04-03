@@ -637,7 +637,6 @@ isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
     // }
 	
 }
-<<<<<<< HEAD
 if (isset($_POST['food_item']) && $_POST['food_item']!="" &&
 isset($_POST['cals']) && $_POST['cals']!="" &&
 isset($_POST['sugar']) && $_POST['sugar']!="" &&
@@ -744,72 +743,6 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
     $aid = 1;
     // //$result = mysqli_query($con,);
 	 $stmt->bind_param("isss",$Id,$today,$notes,$notes);
-=======
-
-if (isset($_POST['exerciseBMI']) && $_POST['exerciseBMI']!="") {
-    //echo "Testing";
-	 include('db.php');
-	 $bmi = $_POST['exerciseBMI'];
-     $id = $_POST['Id'];
-     
-    // //echo $order_id;
-    $stmt = $con->prepare("UPDATE personal_health_information SET BMI = ? WHERE UID = ?");
-    $aid = 1;
-    // //$result = mysqli_query($con,);
-	 $stmt->bind_param("ii",$bmi,$id);
-     $stmt->execute();
-     echo 1;
-}
-
-if (isset($_POST['exerciseWeight']) && $_POST['exerciseWeight']!="") {
-    //echo "Testing";
-	 include('db.php');
-	 $exerciseW = $_POST['exerciseWeight'];
-     $id = $_POST['Id'];
-     
-    // //echo $order_id;
-    $stmt = $con->prepare("UPDATE personal_health_information SET weight = ? WHERE UID = ?");
-    $aid = 1;
-    // //$result = mysqli_query($con,);
-	 $stmt->bind_param("ii",$exerciseW,$id);
-     $stmt->execute();
-     echo 1;
-	
-}
-if (isset($_POST['height']) && $_POST['height']!="") {
-    //echo "Testing";
-	 include('db.php');
-	 $height = $_POST['height'];
-     $id = $_POST['Id'];
-     
-    // //echo $order_id;
-    $stmt = $con->prepare("UPDATE personal_health_information SET height = ? WHERE UID = ?");
-    $aid = 1;
-    // //$result = mysqli_query($con,);
-	 $stmt->bind_param("ii",$height,$id);
-     $stmt->execute();
-     echo 1;
-	
-}
-
-if (isset($_POST['eType']) && $_POST['eType']!="" &&
-    isset($_POST['cal']) && $_POST['cal']!="" &&
-    isset($_POST['ExerciseName']) && $_POST['ExerciseName']!="" &&
-    isset($_POST['ExerciseTime']) && $_POST['ExerciseTime']!="") {
-    //echo "Testing";
-	 include('db.php');
-	 $eType = $_POST['eType'];
-     $cal = $_POST['cal'];
-     $name = $_POST['ExerciseName'];
-     $time = $_POST['ExerciseTime'];
-     $id = $_POST['Id'];
-     
-    // //echo $order_id;
-    $stmt = $con->prepare("INSERT INTO exercise_tracker (calories_spent,timeSpent,UID,exerciseName,exerciseType) VALUES(?,?,?,?,?)");
-
-    // //$result = mysqli_query($con,);
-	 $stmt->bind_param("iiiss",$cal,$time,$id,$name,$eType);
->>>>>>> ee568fa4c6a6535346c8c961f7c20fca9d4e26f1
      $stmt->execute();
      echo 1;
 }

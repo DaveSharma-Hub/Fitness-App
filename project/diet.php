@@ -411,7 +411,6 @@ new Chart("myChart2", {
     }
   }
 });
-<<<<<<< HEAD
 $("#food").on("submit", function(e) {
  
  var dataString = $(this).serialize();
@@ -423,81 +422,5 @@ $("#food").on("submit", function(e) {
 });
  e.preventDefault();
 });
-=======
-
-function pieChart(){
-  $.ajax({
-          url: "http://localhost:5000/api.php?dietInfoID="+id,
-          type: 'GET',
-          dataType: 'json', // added data type
-          success: function(res) {
-              console.log(res);
-              //json = res;
-              //alert(res);
-              var data = [res].map(function(e) {
-                    return e.fat;
-              });;
-              var data2 = [res].map(function(e) {
-                    return e.protein;
-              });;
-              data.push(data2[0]);
-               data2 = [res].map(function(e) {
-                    return e.carbs;
-              });;
-              data.push(data2[0]);
-               data2 = [res].map(function(e) {
-                    return e.sugar;
-              });;
-              data.push(data2[0]);
-               data2 = [res].map(function(e) {
-                    return e.sodium;
-              });;
-              data.push(data2[0]);
-
-              var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
-
-              data.push(data3[0]);
-              new Chart("myChart", {
-              type: "pie",
-              data: {
-                labels: xValues,
-                datasets: [{
-                  backgroundColor: barColors,
-                  data: data
-                }]
-              },
-              options: {
-                title: {
-                  display: true,
-                  text: "Your Overall Diet"
-                }
-              }
-            });
-              // new Chart("myChart", {
-              //   type: "doughnut",
-              //   data: {
-              //     labels: xValues,
-              //     datasets: [{
-              //       backgroundColor: barColors,
-              //       data: data
-              //     }]
-              //   },
-              //   options: {
-              //     title: {
-              //       display: true,
-              //       text: "Your Exercise History"
-              //     }
-              //   }
-              // });
-
-      }
-  });
-}
-
-function start(){
-  pieChart();
-  startTime();
-}
->>>>>>> ee568fa4c6a6535346c8c961f7c20fca9d4e26f1
 </script>
 </html> 

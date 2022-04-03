@@ -265,13 +265,14 @@ tr:nth-child(even) {
 <table>
   <tr>
     <th>Legend</th>
-    <th>Sunday</th>
     <th>Monday</th>
     <th>Tuesday</th>
     <th>Wednesday</th>
     <th>Thursday</th>
     <th>Friday</th>
     <th>Saturday</th>
+    <th>Sunday</th>
+
   </tr>
   <tr>
     <td>Recommended Hours</td>
@@ -300,7 +301,7 @@ tr:nth-child(even) {
 <script>
 var id = document.getElementById("custId").value;
 
-    var xDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    var xDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"];
     
     // new Chart("weeklySleepChart", {
     // type: "line",
