@@ -402,6 +402,7 @@ $("#foo").on("submit", function(e) {
   $.post('http://localhost:5000/api.php', dataString, function(response) {
     // Log the response to the console
     console.log("Response: "+response);
+    location.reload(); 
 });
 //  $.ajax({
 //    type: "POST",

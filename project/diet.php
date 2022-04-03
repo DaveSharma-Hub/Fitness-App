@@ -19,6 +19,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -280,7 +283,7 @@ button:hover {
 }
 </style>
 </head>
-<body onload="startTime()">
+<body onload="start()">
 <div class="topnav">
   <a href="login.html">Logout</a>
   <a href="myAccount.php">My Account</a>
@@ -379,7 +382,7 @@ class="close" title="Close Modal">&times;</span>
 </body>
 <script>
 var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
-var yValues = [55, 49, 44, 24, 60];
+//var yValues = [55, 49, 44, 24, 60];
 var barColors = [
   "#b91d47",
   "#00aba9",
@@ -387,22 +390,7 @@ var barColors = [
   "#e8c3b9",
 ];
 
-new Chart("myChart", {
-  type: "pie",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Your Overall Diet"
-    }
-  }
-});
+
 var xValues = [50,60,70,80,90,100,110,120,130,140,150];
 var yValues = [7,8,8,9,9,9,10,11,14,14,15];
 new Chart("myChart2", {
@@ -422,5 +410,79 @@ new Chart("myChart2", {
     }
   }
 });
+
+function pieChart(){
+  $.ajax({
+          url: "http://localhost:5000/api.php?dietInfoID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.fat;
+              });;
+              var data2 = [res].map(function(e) {
+                    return e.protein;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.carbs;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.sugar;
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                    return e.sodium;
+              });;
+              data.push(data2[0]);
+
+              var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
+
+              data.push(data3[0]);
+              new Chart("myChart", {
+              type: "pie",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor: barColors,
+                  data: data
+                }]
+              },
+              options: {
+                title: {
+                  display: true,
+                  text: "Your Overall Diet"
+                }
+              }
+            });
+              // new Chart("myChart", {
+              //   type: "doughnut",
+              //   data: {
+              //     labels: xValues,
+              //     datasets: [{
+              //       backgroundColor: barColors,
+              //       data: data
+              //     }]
+              //   },
+              //   options: {
+              //     title: {
+              //       display: true,
+              //       text: "Your Exercise History"
+              //     }
+              //   }
+              // });
+
+      }
+  });
+}
+
+function start(){
+  pieChart();
+  startTime();
+}
 </script>
 </html> 
