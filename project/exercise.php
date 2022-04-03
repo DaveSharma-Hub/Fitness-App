@@ -10,6 +10,15 @@
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
     $response = curl_exec($client);
     $result = json_decode($response);
+
+
+    $url = "http://localhost:5000/api.php?personalHealthID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultP = json_decode($response);
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,6 +28,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
@@ -128,7 +139,7 @@ body{
     font-size: 2em;
     color: #666;
 }
-input[type=text] {
+input[type=text], input[type=number] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -322,7 +333,7 @@ canvas {
         <h2>Medical Metrics Inputs<h2>
         <button onclick="document.getElementById('id04').style.display='block'" >BMI</button>
         <button onclick="document.getElementById('id05').style.display='block'">Weight</button>
-        <button onclick="document.getElementById('id05').style.display='block'">Height</button>
+        <button onclick="document.getElementById('id06').style.display='block'">Height</button>
 
     </div>
 </div>
@@ -334,17 +345,21 @@ canvas {
 </div>
 <div id="id01" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="cardio" action="" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>Cardio Tracker</h2>
     </div>
 
     <div class="container">
+    <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
+    <input type="hidden" id="eType" name="eType" value="Cardio"> 
       <label for="cal"><b>Calories Burnt</b></label>
       <input type="text" placeholder="Enter Calories" name="cal" required>
-      <label for="cal"><b>Exercise Name</b></label>
-      <input type="text" placeholder="Enter Calories" name="cal" required>
+      <label for="ExerciseName"><b>Exercise Name</b></label>
+      <input type="text" placeholder="Enter Name" name="ExerciseName" required>
+      <label for="ExerciseTime"><b>Exercise Time</b></label>
+      <input type="text" placeholder="Enter Time" name="ExerciseTime" required>
       <button type="submit">Submit</button>
     </div>
 
@@ -356,7 +371,7 @@ canvas {
 
 <div id="id02" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="strength" action="" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>Strength Tracker</h2>
@@ -364,10 +379,14 @@ canvas {
     </div>
 
     <div class="container">
-      <label for="uname"><b>Calories Burnt</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-      <label for="cal"><b>Exercise Name</b></label>
+    <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
+    <input type="hidden" id="eType" name="eType" value="Strength"> 
+    <label for="cal"><b>Calories Burnt</b></label>
       <input type="text" placeholder="Enter Calories" name="cal" required>
+      <label for="ExerciseName"><b>Exercise Name</b></label>
+      <input type="text" placeholder="Enter Name" name="ExerciseName" required>
+      <label for="ExerciseTime"><b>Exercise Time</b></label>
+      <input type="text" placeholder="Enter Time" name="ExerciseTime" required>
       <button type="submit">Submit</button>
     </div>
 
@@ -378,7 +397,7 @@ canvas {
 </div>
 <div id="id03" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="flexibility" action="" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>Flexibility Tracker</h2>
@@ -386,12 +405,15 @@ canvas {
     </div>
 
     <div class="container">
-      <label for="uname"><b>Calories Burnt</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
+    <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
+    <input type="hidden" id="eType" name="eType" value="Flexibility"> 
 
-      <label for="uname"><b>Exercise Name</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-
+    <label for="cal"><b>Calories Burnt</b></label>
+      <input type="text" placeholder="Enter Calories" name="cal" required>
+      <label for="ExerciseName"><b>Exercise Name</b></label>
+      <input type="text" placeholder="Enter Name" name="ExerciseName" required>
+      <label for="ExerciseTime"><b>Exercise Time</b></label>
+      <input type="text" placeholder="Enter Time" name="ExerciseTime" required>
       <button type="submit">Submit</button>
     </div>
 
@@ -403,7 +425,7 @@ canvas {
 
 <div id="id04" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="bmi" method="">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id04').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>BMI Tracker</h2>
@@ -411,9 +433,10 @@ canvas {
     </div>
 
     <div class="container">
+
       <label for="uname"><b>New BMI</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-        
+      <input type="number" placeholder=<?php echo $resultP->bmi?> name="exerciseBMI" required>
+        <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
       <button type="submit">Submit</button>
     </div>
 
@@ -424,15 +447,16 @@ canvas {
 </div>
 <div id="id05" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="Wtracker" method="">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id05').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>Weight Tracker</h2>
     </div>
 
     <div class="container">
+    <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
       <label for="uname"><b>New Weight</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
+      <input type="text" placeholder=<?php echo $resultP->weight." Lbs"?> name="exerciseWeight" required>
 
       <button type="submit">Submit</button>
     </div>
@@ -444,7 +468,7 @@ canvas {
 </div>
 <div id="id06" class="modal">
   
-  <form class="modal-content animate" action="/action_page.php" method="post">
+  <form class="modal-content animate" id="height" action="" method="post">
     <div class="imgcontainer">
       <span onclick="document.getElementById('id06').style.display='none'" class="close" title="Close Modal">&times;</span>
       <h2>Height Tracker</h2>
@@ -452,7 +476,9 @@ canvas {
 
     <div class="container">
       <label for="uname"><b>New Height</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
+      <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
+
+      <input type="text" placeholder=<?php echo $resultP->height." cm"?> name="height" required>
 
       <button type="submit">Submit</button>
     </div>
@@ -514,8 +540,8 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
-var xValues = ["Deadlift", "Running", "Pull-Ups"];
-var yValues = [55, 49, 44];
+var xValues = ["Cardio", "Flexibility", "Strength"];
+//var yValues = [55, 49, 44];
 var barColors = [
   "#b91d47",
   "#00aba9",
@@ -548,22 +574,22 @@ window.onclick = function(event) {
 //     }
 // }
 
-new Chart("myChart", {
-  type: "doughnut",
-  data: {
-    labels: xValues,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues
-    }]
-  },
-  options: {
-    title: {
-      display: true,
-      text: "Your Exercise History"
-    }
-  }
-});
+// new Chart("myChart", {
+//   type: "doughnut",
+//   data: {
+//     labels: xValues,
+//     datasets: [{
+//       backgroundColor: barColors,
+//       data: yValues
+//     }]
+//   },
+//   options: {
+//     title: {
+//       display: true,
+//       text: "Your Exercise History"
+//     }
+//   }
+// });
 // var xValues = [50,60,70,80,90,100,110,120,130,140,150];
 // var yValues = [7,8,8,9,9,9,10,11,14,14,15];
 
@@ -678,9 +704,180 @@ function scatterPlot(){
   });
 
 }
+function pieChart(){
+  $.ajax({
+          url: "http://localhost:5000/api.php?exerciseTypeID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.cardio;
+              });;
+               var data2 = [res].map(function(e) {
+                    return e.flexibility;
+              });;
+              data.push(data2[0]);
+              var data3 = [res].map(function(e) {
+                    return e.strength;
+              });;
+              data.push(data3[0]);
+
+              new Chart("myChart", {
+                type: "doughnut",
+                data: {
+                  labels: xValues,
+                  datasets: [{
+                    backgroundColor: barColors,
+                    data: data
+                  }]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: "Your Exercise History"
+                  }
+                }
+              });
+              //data.push(data3[0]);
+
+              //  console.log(data[0]);
+              //  console.log(data2[0]);
+            //   new Chart("myChart2", {
+            //     type: "line",
+            //     data: {
+            //       labels: data[0],
+            //       datasets: [{
+            //         backgroundColor: "rgba(100,9,50,1.0)",
+            //         borderColor: "rgba(0,0,0,0.1)",
+            //         data: data2[0]
+            //       }]
+            //     },
+            //     options:{
+            //         title: {
+            //         display: true,
+            //         text: "Your Overall Calories Change"
+            //       },
+            //       scales: {
+            //             yAxes: [{
+            //                     display: true,
+            //                     ticks: {
+            //                         // beginAtZero: true,
+            //                         // steps: 50,
+            //                         // stepValue: 20,
+            //                         // max: 1000
+            //                         suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+            //                         // OR //
+            //                         beginAtZero: true   // minimum value will be 0.
+            //                     },
+            //                     scaleLabel: {
+            //                       display: true,
+            //                       labelString: 'Calories'
+            //                     }
+            //                 }],
+            //                 xAxes: [{
+            //                     display: true,
+            //                     scaleLabel: {
+            //                       display: true,
+            //                       labelString: 'Time (min)'
+            //                     }
+            //                 }]
+            //         }
+            //     }
+            // });
+      }
+  });
+}
+
 function start(){
   scatterPlot();
+  pieChart();
   startTime();
 }
+$("#bmi").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+
+
+$("#Wtracker").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+
+$("#height").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+
+$("#cardio").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+$("#flexibility").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+$("#strength").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload(); 
+  });
+ e.preventDefault();
+});
+
 </script>
 </html> 
