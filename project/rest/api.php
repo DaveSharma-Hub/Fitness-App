@@ -428,6 +428,52 @@ if (isset($_GET['getMyInstructorUID']) && $_GET['getMyInstructorUID']!="" ) {
     }
 }
 
+if (isset($_GET['exerciseTypeID']) && $_GET['exerciseTypeID']!="") {
+	include('db.php');
+	$id = $_GET['exerciseTypeID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM exercise_tracker WHERE UID=?");
+    $stmt->bind_param("i",$id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $cardio = 0;
+    $flex = 0;
+    $strength = 0;
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            if($row['exerciseType']=="Cardio"){
+                $cardio+=$row['calories_spent'];
+            }
+            else if($row['exerciseType']=="Flexibility"){
+                $flex+=$row['calories_spent'];
+            }
+            else if($row['exerciseType']=="Strength"){
+                $strength+=$row['calories_spent'];
+            }
+            // $id = $row['IID'];
+            // $f = $row['FName'];
+            // $l = $row['LName'];
+            // array_push($ids,$id);
+            // array_push($fname,$f);
+            // array_push($lname,$l);
+        }
+    }
+
+    if($cardio!=0 && $flex!=0 && $strength!=0){
+        responseExerciseType($cardio,$flex,$strength);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
+
 if (isset($_GET['getChatData']) && $_GET['getChatData']!="" &&isset($_GET['IID']) && $_GET['IID']!="" ) {
 	include('db.php');
 	$username = $_GET['getChatData'];
@@ -473,6 +519,77 @@ if (isset($_GET['getChatData']) && $_GET['getChatData']!="" &&isset($_GET['IID']
 	    responseLogin($loggedIn,NULL);
     }
 }
+
+if (isset($_GET['personalHealthID']) && $_GET['personalHealthID']!="") {
+	include('db.php');
+	$id = $_GET['personalHealthID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM personal_health_information WHERE UID=?");
+    $stmt->bind_param("i",$id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $w = $row['weight'];
+            $h = $row['height'];
+            $b = $row['BMI'];
+            if($w!=0 && $h!=0 && $b!=0){
+                responsePersonalHealth($w,$h,$b);
+                mysqli_close($con);
+            }
+        }
+    }
+    else{
+        // $loggedIn = false;
+	    // responseLogin($loggedIn,NULL);
+    }
+}
+
+if (isset($_GET['dietInfoID']) && $_GET['dietInfoID']!="") {
+	include('db.php');
+	$id = $_GET['dietInfoID'];
+    //echo $order_id;
+    $date = new DateTime();
+    $today = $date->format('Y-m-d');
+
+    $stmt = $con->prepare("SELECT * FROM FoodItems WHERE UID=? AND TodayDate=? ");
+    $stmt->bind_param("is",$id,$today);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $fat=0; 
+    $sugar=0;
+    $protein=0;
+    $sodium=0;
+    $carbs=0;
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $fat += $row['Fat'];
+            $sugar += $row['Sugar'];
+            $protein += $row['Protein'];
+            $carbs += $row['Carbohydrates'];
+            $sodium += $row['Sodium'];
+        }
+    }
+    if($fat!=0 && $sugar!=0 && $protein!=0 && $carbs!=0 && $sodium!=0){
+        responseDietInfo($fat,$sugar,$protein,$carbs,$sodium);
+        mysqli_close($con);
+    }
+    else{
+        // $loggedIn = false;
+	    // responseLogin($loggedIn,NULL);
+    }
+}
+
+
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
 isset($_POST['myAccountEmail']) && $_POST['myAccountEmail']!="" &&
@@ -521,7 +638,72 @@ isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
 	
 }
 
+if (isset($_POST['exerciseBMI']) && $_POST['exerciseBMI']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $bmi = $_POST['exerciseBMI'];
+     $id = $_POST['Id'];
+     
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE personal_health_information SET BMI = ? WHERE UID = ?");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("ii",$bmi,$id);
+     $stmt->execute();
+     echo 1;
+}
 
+if (isset($_POST['exerciseWeight']) && $_POST['exerciseWeight']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $exerciseW = $_POST['exerciseWeight'];
+     $id = $_POST['Id'];
+     
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE personal_health_information SET weight = ? WHERE UID = ?");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("ii",$exerciseW,$id);
+     $stmt->execute();
+     echo 1;
+	
+}
+if (isset($_POST['height']) && $_POST['height']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $height = $_POST['height'];
+     $id = $_POST['Id'];
+     
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE personal_health_information SET height = ? WHERE UID = ?");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("ii",$height,$id);
+     $stmt->execute();
+     echo 1;
+	
+}
+
+if (isset($_POST['eType']) && $_POST['eType']!="" &&
+    isset($_POST['cal']) && $_POST['cal']!="" &&
+    isset($_POST['ExerciseName']) && $_POST['ExerciseName']!="" &&
+    isset($_POST['ExerciseTime']) && $_POST['ExerciseTime']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $eType = $_POST['eType'];
+     $cal = $_POST['cal'];
+     $name = $_POST['ExerciseName'];
+     $time = $_POST['ExerciseTime'];
+     $id = $_POST['Id'];
+     
+    // //echo $order_id;
+    $stmt = $con->prepare("INSERT INTO exercise_tracker (calories_spent,timeSpent,UID,exerciseName,exerciseType) VALUES(?,?,?,?,?)");
+
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("iiiss",$cal,$time,$id,$name,$eType);
+     $stmt->execute();
+     echo 1;
+}
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -591,10 +773,36 @@ isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
         echo $json_response;
    }
    function responseMyInstructorCard($stmt,$fname,$lname){
-    $response['IID'] = $stmt;
-    $response['FName'] = $fname;
-    $response['LName'] = $lname;
-    $json_response = json_encode($response);
-    echo $json_response;
+        $response['IID'] = $stmt;
+        $response['FName'] = $fname;
+        $response['LName'] = $lname;
+        $json_response = json_encode($response);
+        echo $json_response;
     }
+    function responsePersonalHealth($w,$h,$b){
+        $response['weight'] = $w;
+        $response['height'] = $h;
+        $response['bmi'] = $b;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseExerciseType($cardio,$flex,$strength){
+        $response['cardio'] = $cardio;
+        $response['flexibility'] = $flex;
+        $response['strength'] = $strength;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseDietInfo($fat,$sugar,$protein,$carbs,$sodium){
+        $response['fat'] = $fat;
+        $response['sugar'] = $sugar;
+        $response['protein'] = $protein;
+        $response['carbs'] = $carbs;
+        $response['sodium'] = $sodium;
+        
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+
 ?>
