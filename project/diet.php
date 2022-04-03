@@ -19,6 +19,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -332,15 +335,16 @@ button:hover {
   <span onclick="document.getElementById('id01').style.display='none'"
 class="close" title="Close Modal">&times;</span>
   <!-- Modal Content -->
-  <form class="modal-content animate">
+  <form id = "food" class="modal-content animate" method = "POST" action = "">
+  <input type="hidden" id="uid" name="uid" value=<?php echo $result->userID?>> 
     <div class="modal-container">
-      Food Item:<input type="text" placeholder="ex: Pizza" name="psw" required><br>
-      Calories(cal):<input type="text" placeholder="ex: 250" name="psw" required><br>
-      Sugar(g): <input type="text" placeholder="ex: 76" name="psw" required><br>
-      Fat(g): <input type="text" placeholder="ex: 34" name="psw" required><br>
-      Protien(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
-      Carbohydrates(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
-      Sodium(g): <input type="text" placeholder="ex: 30" name="psw" required><br>
+      Food Item:<input type="text" placeholder="ex: Pizza" name="food_item" required><br>
+      Calories(cal):<input type="text" placeholder="ex: 250" name="cals" required><br>
+      Sugar(g): <input type="text" placeholder="ex: 76" name="sugar" required><br>
+      Fat(g): <input type="text" placeholder="ex: 34" name="fat" required><br>
+      Protien(g): <input type="text" placeholder="ex: 30" name="protein" required><br>
+      Carbohydrates(g): <input type="text" placeholder="ex: 30" name="carbs" required><br>
+      Sodium(g): <input type="text" placeholder="ex: 30" name="sodium" required><br>
       <button type="submit">Add Food Item</button>
     </div>
   </form>
@@ -421,6 +425,17 @@ new Chart("myChart2", {
       text: "Your Overall Diet"
     }
   }
+});
+$("#food").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload();
+});
+ e.preventDefault();
 });
 </script>
 </html> 

@@ -520,8 +520,115 @@ isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
     // }
 	
 }
-
-
+if (isset($_POST['food_item']) && $_POST['food_item']!="" &&
+isset($_POST['cals']) && $_POST['cals']!="" &&
+isset($_POST['sugar']) && $_POST['sugar']!="" &&
+isset($_POST['fat']) && $_POST['fat']!=""&&
+isset($_POST['protein']) && $_POST['protein']!="" &&
+isset($_POST['carbs']) && $_POST['carbs']!=""&&
+isset($_POST['sodium']) && $_POST['sodium']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $food_item = $_POST['food_item'];
+     $cals = $_POST['cals'];
+     $sugar = $_POST['sugar'];
+     $fat = $_POST['fat'];
+     $protein = $_POST['protein'];
+     $carbs = $_POST['carbs'];
+     $sodium = $_POST['sodium'];
+     $Id = $_POST['uid'];
+     $date = new DateTime();
+    $today = $date->format('Y-m-d');
+    // //echo $order_id;
+    $stmt = $con->prepare("INSERT INTO FoodItems (UID,TodayDate,FoodItem,Calories,Sugar,Fat,Protein,Carbohydrates,Sodium) VALUES (?,?,?,?,?,?,?,?,?)");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("issiiiiii",$Id,$today,$food_item,$cals,$sugar,$fat,$protein,$carbs,$sodium);
+     $stmt->execute();
+     echo 1;
+     $stmt = $con->prepare("INSERT INTO Diet_tracker (UID,calories_intake,dateDiet) VALUES (?,?,?)");
+     $aid = 1;
+    $stmt->bind_param("iis",$Id,$cals,$today);
+    $stmt->execute();
+    echo 1;		
+}
+if (isset($_POST['sleeptime']) && $_POST['sleeptime']!="" &&
+isset($_POST['wakeuptime']) && $_POST['wakeuptime']!="" ){
+    //echo "Testing";
+	 include('db.php');
+	 $sleep = $_POST['sleeptime'];
+     $wake = $_POST['wakeuptime'];
+    $Id = $_POST['Sleepuid'];
+    $date = new DateTime();
+    $today = $date->format('Y-m-d');
+    $start = new DateTime($sleep);
+    $end = new DateTime($wake);
+    $sleepDiff = $start->diff($end);
+    $sleepHours = $sleepDiff->format("%H");
+    $weekday = date('w');
+    $stmt = $con->prepare("INSERT INTO sleep_tracker (hours_slept, UID, TodayDate) VALUES (?,?,?) ON DUPLICATE KEY UPDATE hours_slept = ?");
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("iisi",$sleepHours,$Id,$today,$sleepHours);
+     $stmt->execute();
+     echo 1;
+    if($weekday == 0){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET sunday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 1){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET monday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 2){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET tuesday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 3){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET wednesday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 4){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET thursday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 5){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET friday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+    else if($weekday == 6){
+        $stmt = $con->prepare("UPDATE weekSleepSchedule SET saturday=? WHERE UID = ?");
+        $stmt->bind_param("ii",$sleepHours,$Id);
+        $stmt->execute();
+        echo 1;
+    }
+}
+if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
+    //echo "Testing";
+	 include('db.php');
+	 $notes = $_POST['textNotes'];
+    $Id = $_POST['Noteuid'];
+    $date = new DateTime();
+    $today = $date->format('Y-m-d');
+    // //echo $order_id;
+    $stmt = $con->prepare("INSERT INTO SleepNotes (UID, TodayDate, Notes) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Notes = ?");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("isss",$Id,$today,$notes,$notes);
+     $stmt->execute();
+     echo 1;
+}
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;

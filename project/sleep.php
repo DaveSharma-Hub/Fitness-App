@@ -241,7 +241,8 @@ tr:nth-child(even) {
     <canvas id="hoursSlept" style="max-width:350px;left:0"></canvas>
 </div>
 <div class = "sleep"> 
-    <form action="action_page.php" method="post">
+    <form id="sleep" action="" method="post">
+      <input type="hidden" id="Sleepuid" name="Sleepuid" value=<?php echo $result->userID?>> 
         <label for="sleeptime"><b>Sleep Time</b></label>
         <input type="time" placeholder="Enter Sleep Time" name="sleeptime" required>
 
@@ -253,7 +254,8 @@ tr:nth-child(even) {
 </div>
 
 <div class = "notes">
-    <form action="action_page.php" method="post">
+    <form id ="notes" action="" method="post">
+    <input type="hidden" id="Noteuid" name="Noteuid" value=<?php echo $result->userID?>> 
         <label for="textNotes"><b>Notes</b></label>
         <input type="textarea" placeholder="Enter Notes Here..." name="textNotes" required>
         <button type="submit">Save</button>
@@ -483,6 +485,28 @@ function start() {
   pieChartInfo();
   scatterChartInfo();
 }
+$("#sleep").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload();
+});
+ e.preventDefault();
+});
+$("#notes").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload();
+});
+ e.preventDefault();
+});
 </script>
 
 </html> 
