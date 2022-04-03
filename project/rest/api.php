@@ -473,6 +473,55 @@ if (isset($_GET['getChatData']) && $_GET['getChatData']!="" &&isset($_GET['IID']
 	    responseLogin($loggedIn,NULL);
     }
 }
+if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
+isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
+isset($_POST['myAccountEmail']) && $_POST['myAccountEmail']!="" &&
+isset($_POST['myAccountAge']) && $_POST['myAccountAge']!="" &&
+isset($_POST['myAccountUsername']) && $_POST['myAccountUsername']!=""&&
+isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $fname = $_POST['myAccountFname'];
+     $lname = $_POST['myAccountLname'];
+     $email = $_POST['myAccountEmail'];
+     $age = $_POST['myAccountAge'];
+     $username = $_POST['myAccountUsername'];
+     $psw = $_POST['myAccountPsw'];
+     $Id = $_POST['custId'];
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE Users SET Fname = ?,Lname=?,Age=?,Username=?,pass=?,Email=?,AID=? WHERE ID = ?");
+    $aid = 1;
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("ssisssii",$fname,$lname,$age,$username,$psw,$email,$aid,$Id);
+     $stmt->execute();
+     echo 1;
+    // $stmt_result = $stmt->get_result();
+    // $cal = array();
+    // $ing = array();
+    // $steps = array();
+    // $name = array();
+    // if($stmt_result->num_rows>0){
+    //     while($row = $stmt_result->fetch_array()){
+    //         // $steps = $row['steps'];
+    //         // $ingredients = $row['ingredients'];
+    //         // $calories = $row['calories'];
+    //         array_push($cal, $row['calories']);
+    //         array_push($ing, $row['ingredients']);
+    //         array_push($steps, $row['steps']);
+    //         array_push($name, $row['name']);
+    //     }
+    // }
+    // if($cal != 0 && $ing != 0 && $steps != 0 && $name != 0){
+    //     responseCard($cal, $ing, $steps, $name);
+    //     mysqli_close($con);
+    // }
+    // else{
+    //     response(NULL, NULL, 200, "No Record Found");
+    // }
+	
+}
+
+
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;

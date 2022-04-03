@@ -22,6 +22,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -273,13 +275,16 @@ button:hover {
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'"
 class="close" title="Close Modal">&times;</span>
-  <form class="modal-content animate" action="" method="post">
+  <form class="modal-content animate" id="foo" action="" method="POST"> 
+    <!-- action="http://localhost:5000/api.php" method="post"> -->
     <div class="modal-container">
-      Full Name<input type="text" placeholder=<?php echo $result->Fname." ".$result->Lname?> name="psw" required><br>
-      Email<input type="text" placeholder=<?php echo $result->Email?> name="psw" required><br>
-      Password<input type="password" placeholder="********" name="psw" required><br>
-      Age<input type="text" placeholder=<?php echo $result->Age?> name="psw" required><br>
-      Username<input type="text" placeholder=<?php echo $result->Username?> name="psw" required><br>
+     <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
+      First Name<input type="text" placeholder=<?php echo $result->Fname?> name="myAccountFname" required><br>
+      Last Name<input type="text" placeholder=<?php echo $result->Lname?> name="myAccountLname" required><br>
+      Email<input type="text" placeholder=<?php echo $result->Email?> name="myAccountEmail" required><br>
+      Password<input type="password" placeholder="********" name="myAccountPsw" required><br>
+      Age<input type="text" placeholder=<?php echo $result->Age?> name="myAccountAge" required><br>
+      Username<input type="text" placeholder=<?php echo $result->Username?> name="myAccountUsername" required><br>
       <button type="submit">Save</button>
     </div>
     <div>
@@ -387,6 +392,34 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
+
+$("#foo").on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  
+ // alert(dataString); return false;
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+});
+//  $.ajax({
+//    type: "POST",
+//    url: "http://localhost:5000/api.php",
+//    data: dataString,
+//    success: function () {
+//      alert("Good job");
+//    },
+
+
+//    error: function(jqXHR, textStatus, errorThrown) {
+//            console.log(textStatus, errorThrown);
+//       }
+//  });
+
+ e.preventDefault();
+});
+
 
 </script>
 
