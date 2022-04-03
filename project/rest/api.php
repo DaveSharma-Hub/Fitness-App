@@ -335,6 +335,143 @@ isset($_GET['fname']) && $_GET['fname']!="" &&isset($_GET['lname']) && $_GET['ln
     }
 	
 }
+
+
+if (isset($_GET['getInstructorUID']) && $_GET['getInstructorUID']!="" ) {
+	include('db.php');
+	$username = $_GET['getInstructorUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Instructor");
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $ids = array();
+    $fname =array();
+    $lname = array();
+    $star = array();
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            // $DBusername = $row['Username'];
+            // $DBpsw = $row['pass'];
+            // if($DBusername == $username && $DBpsw == $password){
+            //     $loggedIn = true;
+            //     $id = $row['ID'];
+            //     responseLogin($loggedIn,$id);
+            //     mysqli_close($con);
+            // }
+            $id = $row['IID'];
+            $f = $row['FName'];
+            $l = $row['LName'];
+            $s = $row['star_rating'];
+            array_push($ids,$id);
+            array_push($fname,$f);
+            array_push($lname,$l);
+            array_push($star,$s);
+        }
+    }
+
+    if($ids!=0 && $fname!=0 && $lname!=0 &&$star!=0){
+        responseInstructorCard($ids, $fname, $lname,$star);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
+
+if (isset($_GET['getMyInstructorUID']) && $_GET['getMyInstructorUID']!="" ) {
+	include('db.php');
+	$username = $_GET['getMyInstructorUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM subscribe,Instructor WHERE Instructor.IID=subscribe.IID AND UID=?");
+    $stmt->bind_param("i",$username);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $ids = array();
+    $fname = array();
+    $lname = array();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            // $DBusername = $row['Username'];
+            // $DBpsw = $row['pass'];
+            // if($DBusername == $username && $DBpsw == $password){
+            //     $loggedIn = true;
+            //     $id = $row['ID'];
+            //     responseLogin($loggedIn,$id);
+            //     mysqli_close($con);
+            // }
+            $id = $row['IID'];
+            $f = $row['FName'];
+            $l = $row['LName'];
+            array_push($ids,$id);
+            array_push($fname,$f);
+            array_push($lname,$l);
+        }
+    }
+
+    if($ids!=0 && $fname!=0 && $lname!=0){
+        responseMyInstructorCard($ids,$fname,$lname);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
+
+if (isset($_GET['getChatData']) && $_GET['getChatData']!="" &&isset($_GET['IID']) && $_GET['IID']!="" ) {
+	include('db.php');
+	$username = $_GET['getChatData'];
+    $iid = $_GET['IID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Messages WHERE IID=? AND UID=?");
+    $stmt->bind_param("ii",$iid,$username);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $IID = array();
+    $UID = array();
+    $msg = array();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            // $DBusername = $row['Username'];
+            // $DBpsw = $row['pass'];
+            // if($DBusername == $username && $DBpsw == $password){
+            //     $loggedIn = true;
+            //     $id = $row['ID'];
+            //     responseLogin($loggedIn,$id);
+            //     mysqli_close($con);
+            // }
+            $id = $row['IID'];
+            $f = $row['FName'];
+            $l = $row['LName'];
+            array_push($ids,$id);
+            array_push($fname,$f);
+            array_push($lname,$l);
+        }
+    }
+
+    if($ids!=0 && $fname!=0 && $lname!=0){
+        responseMyInstructorCard($ids,$fname,$lname);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -395,5 +532,19 @@ isset($_GET['fname']) && $_GET['fname']!="" &&isset($_GET['lname']) && $_GET['ln
         $json_response = json_encode($response);
         echo $json_response;
     }
-
+   function responseInstructorCard($ids, $fname, $lname,$star){
+        $response['ids'] = $ids;
+        $response['fname'] = $fname;
+        $response['lname'] = $lname;
+        $response['star'] = $star;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
+   function responseMyInstructorCard($stmt,$fname,$lname){
+    $response['IID'] = $stmt;
+    $response['FName'] = $fname;
+    $response['LName'] = $lname;
+    $json_response = json_encode($response);
+    echo $json_response;
+    }
 ?>

@@ -1,10 +1,25 @@
 <?php
     //include 'user.php';
     session_start();
-    $username = $_SESSION['login'];
+    //$username = $_SESSION['login'];
     // if($username==null){
     //   header('Location: login.html');
     // }
+    $id = $_SESSION['id'];
+    $IID=0;
+    $iFname=0;
+    $iLname=0;
+    if(isset($_POST['IID'])&&$_POST['IID']!="" &&isset($_POST['ifname'])&&$_POST['ifname']!=""&&
+    isset($_POST['ilname'])&&$_POST['ilname']!=""){
+      $IID = $_POST['IID'];
+      $iFname = $_POST['ifname'];
+      $iLname = $_POST['ilname'];
+    }
+    $url = "http://localhost:5000/api.php?userID=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -194,7 +209,11 @@ button {
 }
 </style>
 </head>
-<body onload="startTime()">
+<input type="hidden" id="IID" name="IID" value=<?php echo $IID?>> 
+<input type="hidden" id="IID" name="IID" value=<?php echo $iFname?>> 
+<input type="hidden" id="IID" name="IID" value=<?php echo $iLname?>> 
+
+<body onload="start()">
 <div class="topnav">
   <a href="#">Logout</a>
   <a href="#news">My Account</a>
@@ -205,7 +224,8 @@ button {
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $username ?></h3>
+  <h3> <?php echo $result->Fname." ".$result->Lname ?> chatting with <?php echo $iFname." ".$iLname ?></h3>
+
 </div>
 <div id="txt"></div>
 
@@ -218,6 +238,13 @@ button {
 
 <div class="chat">
     <?php
+    $url = "http://localhost:5000/api.php?getChatData=".$id."&IID=".$IID;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result3 = json_decode($response);
+
         // for($i=0;$i<10;$i++){
         //     if($i==){
         //         echo "<div class='left'>Hello</div>";
@@ -339,5 +366,30 @@ new Chart("myChart2", {
     }
   }
 });
+
+
+function getData(){
+      $.ajax({
+          type: 'GET',
+          url: '.php',
+          success: function(data){
+              $('#chatbox').html(data);
+                      var newscrollHeight = $("#chatbox")[0].scrollHeight - 20; //Scroll height after the request
+                      //if(newscrollHeight > oldscrollHeight){
+                          $("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
+                  // }   
+              }
+          });
+      }
+      getData();
+      setInterval(function () {
+          getData(); 
+}, 1000);  // it will refresh your data every 1 sec
+
+
+fuction start(){
+  startTime();
+  getData();
+}
 </script>
 </html> 

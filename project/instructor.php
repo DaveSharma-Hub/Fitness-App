@@ -157,7 +157,7 @@ body{
     width:48%;
     text-align:center;
 }
-.chat a{
+button{
     /* float:right; */
     background-color: blue;
     text-align: center;
@@ -165,8 +165,11 @@ body{
     font-size: 17px;
     border-radius:5px;
     color:white;
-    padding:1px;
+    padding:2px;
+    border:none;
+    cursor:pointer;
 }
+
 .checked {
   color: orange;
 }
@@ -198,24 +201,53 @@ body{
         <h1>Instructor Subscription</h1>
 
         <?php
-            for($i=0;$i<6;$i++){
+          $url = "http://localhost:5000/api.php?getInstructorUID=".$id;
+	
+          $client = curl_init($url);
+          curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+          $response = curl_exec($client);
+          $result2 = json_decode($response);
+
+            for($i=0;$i<count($result2->ids);$i++){
                 echo "<p>";
-                if($i%2==0){
-                    echo "	&#11088;&#11088;&#11088;&#9733;&#9733;";
-                }else{
+                if($result2->star[$i]==0){
+                    echo "	&#9733;&#9733;&#9733;&#9733;&#9733;";
+                }
+                else if($result2->star[$i]==1){
+                  echo "	&#11088;&#9733;&#9733;&#9733;&#9733;";
+                 }
+                 else if($result2->star[$i]==2){
+                  echo "	&#11088;&#11088;&#9733;&#9733;&#9733;";
+                 }
+                 else if($result2->star[$i]==3){
+                  echo "	&#11088;&#11088;&#11088;&#9733;&#9733;";
+                 }
+                 else if($result2->star[$i]==4){
+                  echo "	&#11088;&#11088;&#11088;&#11088;&#9733;";
+                 }
+                else{
                     echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
                 }
-                echo "Instructor ".$i."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
+                echo "Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
             }
         ?>
     </div>
     <div class="chat">
+        
         <h1>Instructor Chat</h1>
         <h4>(Instructors you have subscribed too)</h4>
 
         <?php
-            for($i=0;$i<3;$i++){
-                echo "<p>Instructor ".$i."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='chat.php'>Chat</a></p>";
+        $url = "http://localhost:5000/api.php?getMyInstructorUID=".$id;
+	
+        $client = curl_init($url);
+        curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+        $response = curl_exec($client);
+        $result3 = json_decode($response);
+        
+            for($i=0;$i<count($result3->IID);$i++){
+                echo "<form action='chat.php' method='post'><p>Instructor ".$result3->FName[$i]." ".$result3->LName[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type='Submit'>Chat</button></p><input type='hidden' id='IID' name='IID' value=".$result3->IID[$i]."> 
+                <input type='hidden' id='ifname' name='ifname' value=".$result3->FName[$i]."><input type='hidden' id='ilname' name='ilname' value=".$result3->LName[$i]."></form>";
             }
             //WE CAN MAKE THE ABOVE 2 INTO A FORM!!!!!!!!!!
         ?>
