@@ -314,7 +314,13 @@ button:hover {
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
     $response = curl_exec($client);
     $cal_result = json_decode($response);
-    echo "<h1>".$cal_result->cal." cal</h1>";
+    echo "<h1>";
+    if($cal_result->cal!=null){
+      echo $cal_result->cal;
+    }else{
+      echo "0";
+    }
+    echo " cal</h1>";
     ?>
 </div>
 <!-- Button to open the modal login form -->

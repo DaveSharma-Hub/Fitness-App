@@ -238,12 +238,13 @@ if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
             }
         }
     }
-    if($cal != 0){
+    if($cal>=0){
         responseCalories($cal);
         mysqli_close($con);
     }
     else{
         response(NULL, NULL, 200, "No Record Found");
+        //responseCalories();
     }
 	
 }
