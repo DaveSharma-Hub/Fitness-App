@@ -33,6 +33,31 @@ if (isset($_GET['userID']) && $_GET['userID']!="") {
 	response(NULL, NULL, 200,"No Record Found");
     }
 }
+if (isset($_GET['instrID']) && $_GET['instrID']!="") {
+	include('db.php');
+	$order_id = $_GET['instrrID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Instructor WHERE IID=?");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $amount = $row['Fname'];
+            $response_code = $row['Lname'];
+            $username = $row['Username'];
+            response($order_id, $amount, $response_code, $username);
+            mysqli_close($con);
+        }
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
 // else{
 // 	response(NULL, NULL, 400,"Invalid Request");
 // 	}
@@ -190,6 +215,35 @@ if (isset($_GET['exerciseCalorieUID']) && $_GET['exerciseCalorieUID']!="") {
     }
 }
 
+if (isset($_GET['instrLogin']) && $_GET['instrLogin']!="" && isset($_GET['pass']) && $_GET['pass']!="") {
+	include('db.php');
+	$username = $_GET['instrLogin'];
+    $password = $_GET['pass'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Instructor");
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            $DBusername = $row['username'];
+            $DBpsw = $row['password'];
+            if($DBusername == $username && $DBpsw == $password){
+                $loggedIn = true;
+                $id = $row['IID'];
+                responseLogin($loggedIn,$id);
+                mysqli_close($con);
+            }
+        }
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+	
+}
 if (isset($_GET['userLogin']) && $_GET['userLogin']!="" && isset($_GET['pass']) && $_GET['pass']!="") {
 	include('db.php');
 	$username = $_GET['userLogin'];
