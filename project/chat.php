@@ -29,6 +29,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 body{
     background-color:white;
@@ -209,9 +211,11 @@ button {
 }
 </style>
 </head>
+<input type="hidden" id="id" name="id" value=<?php echo $result->userID?>> 
+
 <input type="hidden" id="IID" name="IID" value=<?php echo $IID?>> 
-<input type="hidden" id="IID" name="IID" value=<?php echo $iFname?>> 
-<input type="hidden" id="IID" name="IID" value=<?php echo $iLname?>> 
+<input type="hidden" id="ifname" name="ifname" value=<?php echo $iFname?>> 
+<input type="hidden" id="ilname" name="ilname" value=<?php echo $iLname?>> 
 
 <body onload="start()">
 <div class="topnav">
@@ -236,7 +240,7 @@ button {
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div class="chat">
+<div class="chat" id="chat">
     <?php
     $url = "http://localhost:5000/api.php?getChatData=".$id."&IID=".$IID;
 	
@@ -254,25 +258,35 @@ button {
         // }
         
     ?>
-    <div class="leftMe">You</div><div class="left">Hello</div><br><br>
+    <!-- <div class="leftMe">You</div><div class="left">Hello</div><br><br>
     <div class="rightThem">Instructor</div><div class="right">Hi</div><br><br>
     <div class="leftMe">You</div><div class="left">I messaged you the workout plan.</div><br><br>
     <div class="rightThem">Instructor</div><div class="right">Thanks</div><br><br>
     <div class="leftMe">You</div><div class="left">Did it suit you?</div><br><br>
     <div class="rightThem">Instructor</div><div class="right">Very much so</div><br><br>
     <div class="leftMe">You</div><div class="left">Have a great rest of your day</div><br><br>
-    <div class="rightThem">Instructor</div><div class="right">You as well</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">You as well</div><br><br> -->
 
 </div>
 <div class="message">
-    <form>
-        <input type="text">
+    <form id="chatMsg">
+    
+    <input type="hidden" id="sender" name="sender" value="1"> 
+    <input type="hidden" id="custIId" name="custIID" value=<?php echo $IID?>> 
+    <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
+        <input type="text" id="textField" name="chatMsg" required>
         <button type="submit">Message</button>
     </form>
 </div>
 
 </body>
 <script>
+  
+var id = document.getElementById("id").value;
+var iid = document.getElementById("IID").value;
+var ifname = document.getElementById("ifname").value;
+var ilname = document.getElementById("ilname").value;
+
 var today = new Date();
 var hourNow = today.getHours();
 var greeting;
@@ -371,23 +385,37 @@ new Chart("myChart2", {
 function getData(){
       $.ajax({
           type: 'GET',
-          url: '.php',
+          url: 'asynchronous.php?id='+id+'&IID='+iid,
           success: function(data){
-              $('#chatbox').html(data);
-                      var newscrollHeight = $("#chatbox")[0].scrollHeight - 20; //Scroll height after the request
+            console.log(data);
+              $('#chat').html(data);
+                      var newscrollHeight = $("#chat")[0].scrollHeight - 20; //Scroll height after the request
                       //if(newscrollHeight > oldscrollHeight){
-                          $("#chatbox").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
+                       $("#chat").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
                   // }   
               }
           });
       }
-      getData();
-      setInterval(function () {
-          getData(); 
+getData();
+
+setInterval(function () {
+    getData(); 
 }, 1000);  // it will refresh your data every 1 sec
 
+$("#chatMsg").on("submit", function(e) {
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    document.getElementById("textField").value = "";
+    // console.log("Response: "+response);
+    //location.reload();
+});
+ e.preventDefault();
+});
 
-fuction start(){
+
+function start(){
   startTime();
   getData();
 }
