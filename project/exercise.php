@@ -702,7 +702,6 @@ function scatterPlot(){
             });
       }
   });
-
 }
 function pieChart(){
   $.ajax({

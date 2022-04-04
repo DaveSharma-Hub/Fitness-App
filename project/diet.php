@@ -19,7 +19,6 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
@@ -34,13 +33,22 @@ body{
   background-color: rgb(82,16,238);
   border-radius:10px;
 }
-canvas {
+/* canvas {
     padding-left: 0;
     padding-right: 0;
     margin-left: auto;
     margin-right: auto;
     display: block;
     width: 80%;
+    float:right;
+} */
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 100%;
     float:right;
 }
 
@@ -284,6 +292,8 @@ button:hover {
 </style>
 </head>
 <body onload="start()">
+<input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
+
 <div class="topnav">
   <a href="login.html">Logout</a>
   <a href="myAccount.php">My Account</a>
@@ -306,8 +316,8 @@ button:hover {
 </div>
 
 <div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+    <canvas id="myChart" style="max-width:300px;left:0"></canvas>
+    <canvas id="myChart2" style="max-width:500px;left:0"></canvas>
 </div>
 <div class = "textbox">
   <h1>Your Daily Calorie Intake is:</h1>
@@ -350,10 +360,10 @@ class="close" title="Close Modal">&times;</span>
   </form>
 </div>
 
-<div>
-  <canvas id = myChart></canvas>
-  <canvas id = myChart2></canvas>
-</div>
+<!-- <div style="width:90%;margin:0 auto;">
+  <canvas id = myChart style="width:100px;left:0"></canvas>
+  <canvas id = myChart2 style="width:100px;left:0"></canvas>
+</div> -->
 <h1>Recipes:</h1>
 <div class = "recipes">
   <?php
@@ -382,15 +392,7 @@ class="close" title="Close Modal">&times;</span>
 </div>
 </body>
 <script>
-var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
-//var yValues = [55, 49, 44, 24, 60];
-var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-];
-
+var id = document.getElementById("custId").value;
 
 var xValues = [50,60,70,80,90,100,110,120,130,140,150];
 var yValues = [7,8,8,9,9,9,10,11,14,14,15];
@@ -422,5 +424,68 @@ $("#food").on("submit", function(e) {
 });
  e.preventDefault();
 });
+
+function pieChart(){
+  $.ajax({
+          url: "http://localhost:5000/api.php?dietInfoID="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    return e.fat;
+              });;
+               var data2 = [res].map(function(e) {
+                    return e.protein;
+              });;
+              data.push(data2[0]);
+              data2 = [res].map(function(e) {
+                    return e.carbs;
+              });;
+              data.push(data2[0]);
+              data2 = [res].map(function(e) {
+                    return e.sugar;
+              });;
+              data.push(data2[0]);
+              data2 = [res].map(function(e) {
+                    return e.sodium;
+              });;
+              data.push(data2[0]);
+              var xValues = ["Fat", "Protien", "Carbohydrates", "Sugar", "Sodium"];
+              //var yValues = [55, 49, 44, 24, 60];
+              var barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797",
+                "#e8c3b9",
+                '#FF0000' 
+              ];
+
+              new Chart("myChart", {
+                type: "doughnut",
+                data: {
+                  labels: xValues,
+                  datasets: [{
+                    backgroundColor: barColors,
+                    data: data
+                  }]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: "Your Diet History"
+                  }
+                }
+              });     
+        }
+  });
+}
+
+function start(){
+  pieChart();
+
+}
 </script>
 </html> 
