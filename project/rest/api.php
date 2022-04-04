@@ -231,15 +231,17 @@ if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
     $date = new DateTime();
     $today = $date->format('Y-m-d');
     $cal = 0;
+    $test =0;
     if($stmt_result->num_rows>0){
         while($row = $stmt_result->fetch_array()){
+            $test = $row['dateDiet'];
             //if(strtotime($row['dateDiet']) == strtotime($today)){ 
                 $cal += $row['calories_intake'];
             //}
         }
     }
     if($cal>=0){
-        responseCalories($cal);
+        responseCalories($today);
         mysqli_close($con);
     }
     else{

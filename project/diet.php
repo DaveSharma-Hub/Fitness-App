@@ -316,8 +316,8 @@ button:hover {
 </div>
 
 <div style="position:relative;">
-    <canvas id="myChart" style="max-width:400px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+    <canvas id="myChart" style="max-width:300px;left:0"></canvas>
+    <canvas id="myChart2" style="max-width:500px;left:0"></canvas>
 </div>
 <div class = "textbox">
   <h1>Your Daily Calorie Intake is:</h1>
@@ -360,10 +360,10 @@ class="close" title="Close Modal">&times;</span>
   </form>
 </div>
 
-<div style="width:90%;margin:0 auto;">
+<!-- <div style="width:90%;margin:0 auto;">
   <canvas id = myChart style="width:100px;left:0"></canvas>
   <canvas id = myChart2 style="width:100px;left:0"></canvas>
-</div>
+</div> -->
 <h1>Recipes:</h1>
 <div class = "recipes">
   <?php
