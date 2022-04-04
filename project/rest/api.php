@@ -488,32 +488,21 @@ if (isset($_GET['getChatData']) && $_GET['getChatData']!="" &&isset($_GET['IID']
     $stmt->execute();
     $stmt_result = $stmt->get_result();
 
-    $IID = array();
-    $UID = array();
-    $msg = array();
+    $who = array();
+    $msgArr = array();
 
     if($stmt_result->num_rows>0){
 
         while($row = $stmt_result->fetch_array()){
-            // $DBusername = $row['Username'];
-            // $DBpsw = $row['pass'];
-            // if($DBusername == $username && $DBpsw == $password){
-            //     $loggedIn = true;
-            //     $id = $row['ID'];
-            //     responseLogin($loggedIn,$id);
-            //     mysqli_close($con);
-            // }
-            $id = $row['IID'];
-            $f = $row['FName'];
-            $l = $row['LName'];
-            array_push($ids,$id);
-            array_push($fname,$f);
-            array_push($lname,$l);
+            $msg = $row['message'];
+            $userSend = $row['userSend'];
+            array_push($msgArr,$msg);
+            array_push($who,$userSend);
         }
     }
 
-    if($ids!=0 && $fname!=0 && $lname!=0){
-        responseMyInstructorCard($ids,$fname,$lname);
+    if($who!=0 && $msgArr!=0){
+        responseMessages($who,$msgArr);
         mysqli_close($con);
     }
     else{
@@ -753,6 +742,21 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
      $stmt->execute();
      echo 1;
 }
+
+if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
+    //echo "Testing";
+	 include('db.php');
+	 $msg = $_POST['chatMsg'];
+    $id = $_POST['custId'];
+    $iid = $_POST['custIID'];
+    $userSend=$_POST['sender'];
+    // //echo $order_id;
+    $stmt = $con->prepare("INSERT INTO Messages (IID, UID, message,userSend) VALUES (?,?,?,?);");
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("iisi",$iid,$id,$msg,$userSend);
+     $stmt->execute();
+     echo 1;
+}
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -852,6 +856,13 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
         $json_response = json_encode($response);
         echo $json_response;
     }
+
+   function responseMessages($who,$msgArr){
+        $response['msg'] = $msgArr;
+        $response['user'] = $who;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
 
 
 ?>
