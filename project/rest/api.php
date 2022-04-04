@@ -920,4 +920,10 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
         $json_response = json_encode($response);
         echo $json_response;
     }
+	function responseMessages($who,$msgArr){
+        $response['msg'] = $msgArr;
+        $response['user'] = $who;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
 ?>
