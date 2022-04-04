@@ -1,10 +1,13 @@
 <?php
     //include 'user.php';
     session_start();
-    $username = $_SESSION['login'];
-    if($username==null){
-      header('Location: instrLogin.html');
-    }
+    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    $url = "http://localhost:5000/api.php?instrID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -266,7 +269,7 @@ button {
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $username ?></h3>
+  <h3>Welcome <?php echo $result->Fname." ".$result->Lname  ?></h3>
 </div>
 <div id="txt"></div>
 

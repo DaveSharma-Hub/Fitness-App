@@ -35,10 +35,10 @@ if (isset($_GET['userID']) && $_GET['userID']!="") {
 }
 if (isset($_GET['instrID']) && $_GET['instrID']!="") {
 	include('db.php');
-	$order_id = $_GET['instrrID'];
+	$id = $_GET['instrID'];
     //echo $order_id;
     $stmt = $con->prepare("SELECT * FROM Instructor WHERE IID=?");
-    $stmt->bind_param("i",$order_id);
+    $stmt->bind_param("i",$id);
 	//$result = mysqli_query($con,);
 	
     $stmt->execute();
@@ -47,10 +47,10 @@ if (isset($_GET['instrID']) && $_GET['instrID']!="") {
     if($stmt_result->num_rows>0){
 
         while($row = $stmt_result->fetch_array()){
-            $amount = $row['Fname'];
-            $response_code = $row['Lname'];
-            $username = $row['Username'];
-            response($order_id, $amount, $response_code, $username);
+            $Fname = $row['FName'];
+            $Lname = $row['LName'];
+            $user = $row['username'];
+            responseInstrLogin($Fname, $Lname, $user, $id);
             mysqli_close($con);
         }
     }
@@ -907,5 +907,13 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
         echo $json_response;
     }
 
-
+    function responseInstrLogin($Fname, $Lname, $user, $id){
+        $response['Fname'] = $Fname;
+        $response['Lname'] = $Lname;
+        $response['user'] = $user;
+        $response['IID'] = $id;
+        
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
 ?>
