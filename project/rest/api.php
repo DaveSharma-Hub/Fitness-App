@@ -233,9 +233,9 @@ if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
     $cal = 0;
     if($stmt_result->num_rows>0){
         while($row = $stmt_result->fetch_array()){
-            if($row['dateDiet'] == $today){ 
+            //if(strtotime($row['dateDiet']) == strtotime($today)){ 
                 $cal += $row['calories_intake'];
-            }
+            //}
         }
     }
     if($cal>=0){
@@ -556,8 +556,8 @@ if (isset($_GET['dietInfoID']) && $_GET['dietInfoID']!="") {
     $date = new DateTime();
     $today = $date->format('Y-m-d');
 
-    $stmt = $con->prepare("SELECT * FROM FoodItems WHERE UID=? AND TodayDate=? ");
-    $stmt->bind_param("is",$id,$today);
+    $stmt = $con->prepare("SELECT * FROM FoodItems WHERE UID=?");
+    $stmt->bind_param("i",$id);
 	//$result = mysqli_query($con,);
 	
     $stmt->execute();
@@ -569,23 +569,28 @@ if (isset($_GET['dietInfoID']) && $_GET['dietInfoID']!="") {
     $sodium=0;
     $carbs=0;
 
+    $counter=0;
     if($stmt_result->num_rows>0){
 
         while($row = $stmt_result->fetch_array()){
-            $fat += $row['Fat'];
-            $sugar += $row['Sugar'];
-            $protein += $row['Protein'];
-            $carbs += $row['Carbohydrates'];
-            $sodium += $row['Sodium'];
+            $counter++;
+
+            //if((($row['TodayDate']))==($today)){
+                $fat += $row['Fat'];
+                $sugar += $row['Sugar'];
+                $protein += $row['Protein'];
+                $carbs += $row['Carbohydrates'];
+                $sodium += $row['Sodium'];
+            //}
         }
     }
-    if($fat!=0 && $sugar!=0 && $protein!=0 && $carbs!=0 && $sodium!=0){
+    if($fat!=0 && $sugar!=0&& $protein!=0 && $carbs!=0 && $sodium!=0){
         responseDietInfo($fat,$sugar,$protein,$carbs,$sodium);
         mysqli_close($con);
     }
     else{
-        // $loggedIn = false;
-	    // responseLogin($loggedIn,NULL);
+         $loggedIn = false;
+	    responseLogin($counter,NULL);
     }
 }
 
