@@ -114,7 +114,7 @@ span.psw {
   <div id="over" style="width:100%; height:100%">
     <img src="index.png">
   </div>
-  <form id="regForm" action="http://localhost:3000/instr.php" method="post">
+  <form id="regForm" action="instr.php" method="post">
       
       <div class="container">
         <h2>Instructor Login</h2>  

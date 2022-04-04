@@ -3,7 +3,7 @@
     session_start();
     $username = $_SESSION['login'];
     if($username==null){
-      header('Location: instrLogin.html');
+      header('Location: instrLogin.php');
     }
 ?>
 <!DOCTYPE html>
