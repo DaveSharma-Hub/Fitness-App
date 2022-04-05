@@ -400,7 +400,7 @@ getData();
 
 setInterval(function () {
     getData(); 
-}, 2000);  // it will refresh your data every 1 sec
+}, 1000);  // it will refresh your data every 1 sec
 
 $("#chatMsg").on("submit", function(e) {
  var dataString = $(this).serialize();
@@ -410,7 +410,7 @@ $("#chatMsg").on("submit", function(e) {
     document.getElementById("textField").value = "";
     // console.log("Response: "+response);
     //location.reload();
-});
+ });
  e.preventDefault();
 });
 

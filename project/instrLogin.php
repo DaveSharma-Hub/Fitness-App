@@ -134,7 +134,7 @@ span.psw {
         <div class="container" style="background-color:#f1f1f1">
           <button type="button" class="signupbtn" onclick="location.href='signup.html';">Sign Up</button>
           <button type="button" class="adminbtn" onclick="location.href='adminLogin.html';">Admin Login</button>
-          <button type="button" class="userbtn" onclick="location.href='login.html';">User Login</button>
+          <button type="button" class="userbtn" onclick="location.href='login.php';">User Login</button>
         </div>
       </form> 
 </body>

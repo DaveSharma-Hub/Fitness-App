@@ -1,7 +1,23 @@
 <?php
     //include 'user.php';
     session_start();
-    $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
+    //$username = $_SESSION['login'];
+    // if($username==null){
+    //   header('Location: login.html');
+    // }
+    $id = $_SESSION['id'];
+    $UID=0;
+    $iFname=0;
+    $iLname=0;
+    if(isset($_POST['UID'])&&$_POST['UID']!="" &&isset($_POST['ifname'])&&$_POST['ifname']!=""&&
+    isset($_POST['ilname'])&&$_POST['ilname']!=""){
+      $UID = $_POST['UID'];
+      $iFname = $_POST['ifname'];
+      $iLname = $_POST['ilname'];
+    }
+    // $UID = $_POST['UID'];
+    //   $iFname = $_POST['ifname'];
+    //   $iLname = $_POST['ilname'];
     $url = "http://localhost:5000/api.php?instrID=".$id;
 	
     $client = curl_init($url);
@@ -123,7 +139,7 @@ body{
 .chat{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:90%;
+    width:70%;
     margin:0 auto;
     height:50vh;
     overflow-y:auto;
@@ -172,7 +188,7 @@ body{
 .message{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:90%;
+    width:70%;
     margin:0 auto;
     height:10vh;
 }
@@ -261,11 +277,15 @@ button {
 
 </style>
 </head>
-<body onload="start()">
-<input type="hidden" id="iid" name="iid" value=<?php echo $id?>> 
+<input type="hidden" id="id" name="id" value=<?php echo $id?>> 
 
+<input type="hidden" id="UID" name="UID" value=<?php echo $UID?>> 
+<input type="hidden" id="ifname" name="ifname" value=<?php echo $iFname?>> 
+<input type="hidden" id="ilname" name="ilname" value=<?php echo $iLname?>> 
+
+<body onload="start()">
 <div class="topnav">
-  <a href="#">Logout</a>
+  <a href="instrLogin.php">Logout</a>
   <a href="#news">My Account</a>
   <a class="active" href="instrMenu.php">Home</a>
 </div>
@@ -274,7 +294,7 @@ button {
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $result->Fname." ".$result->Lname  ?></h3>
+  <h3><?php echo $result->Fname." ".$result->Lname  ?> chatting with <?php echo $iFname." ".$iLname?></h3>
 </div>
 <div id="txt"></div>
 
@@ -284,58 +304,53 @@ button {
   <a href="instrDiet.php" id="projects">Update Diet</a>
   <a href="instrMsg.php" id="contact">Messages</a>
 </div>
-<div class="outer">
-    <div class="chat">
-        <h1>User Chat</h1>
-        <h4>(Users that have subscribed to you)</h4>
 
-        <?php
-        $url = "http://localhost:5000/api.php?getMySubscriberIID=".$id;
+<div class="chat" id="chat">
+    <?php
+    // $url = "http://localhost:5000/api.php?getChatData=".$id."&IID=".$IID;
 	
-        $client = curl_init($url);
-        curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
-        $response = curl_exec($client);
-        $result2 = json_decode($response);
+    // $client = curl_init($url);
+    // curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    // $response = curl_exec($client);
+    // $result3 = json_decode($response);
 
-            for($i=0;$i<count($result2->UID);$i++){
-              echo "<form action='InstructorChat.php' method='post'><p>User ".$result2->FName[$i]." ".$result2->LName[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type='Submit'>Chat</button></p><input type='hidden' id='UID' name='UID' value=".$result2->UID[$i]."> 
-                <input type='hidden' id='ifname' name='ifname' value=".$result2->FName[$i]."><input type='hidden' id='ilname' name='ilname' value=".$result2->LName[$i]."></form>";
-              /*
-                echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
-                <!-- The Modal -->
-                <div id='".$i."' class='modal'>
-                <span onclick=\"document.getElementById('".$i."').style.display='none'\"
-                class=\"close\" title=\"Close Modal\" >&times;</span>
-                <!-- Modal Content -->
-                <form class='modal-content animate'>
-                <input type='hidden' id='custId' name='custId' value=".$result2->UID[$i]."> 
+        // for($i=0;$i<10;$i++){
+        //     if($i==){
+        //         echo "<div class='left'>Hello</div>";
+        //     }else{
 
-                    <div class='chat' id='chat'>
-                    
-                    </div>
-                    <div class='message'>
-                        <form id='chatMsg'>
-                        <input type='hidden' id='sender' name='sender' value='0'> 
-                        <input type='hidden' id='custIId' name='custIID' value=".$id."> 
-                        <input type='hidden' id='custId' name='custId' value=".$result2->UID[$i]."> 
-                            <input type='text' id='textField' name='chatMsg' required>
-                            <button type='submit'>Send</button>
-                        </form>
-                    </div>
-                </form>
-                </div>";
-                }
-                */
-              }
-        ?>
-    </div>
+        //     }
+        // }
+        
+    ?>
+    <!-- <div class="leftMe">You</div><div class="left">Hello</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Hi</div><br><br>
+    <div class="leftMe">You</div><div class="left">I messaged you the workout plan.</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Thanks</div><br><br>
+    <div class="leftMe">You</div><div class="left">Did it suit you?</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">Very much so</div><br><br>
+    <div class="leftMe">You</div><div class="left">Have a great rest of your day</div><br><br>
+    <div class="rightThem">Instructor</div><div class="right">You as well</div><br><br> -->
+
 </div>
-
+<div class="message">
+    <form id="chatMsg">
+    
+    <input type="hidden" id="sender" name="sender" value="0"> 
+    <input type="hidden" id="custIId" name="custIID" value=<?php echo $id?>> 
+    <input type="hidden" id="custId" name="custId" value=<?php echo $UID?>> 
+        <input type="text" id="textField" name="chatMsg" required>
+        <button type="submit">Message</button>
+    </form>
+</div>
 
 </body>
 <script>
-  var iid = document.getElementById("iid").value;
-  var id = document.getElementById("custId").value;
+  
+var iid = document.getElementById("id").value;
+var uid = document.getElementById("UID").value;
+var ifname = document.getElementById("ifname").value;
+var ilname = document.getElementById("ilname").value;
 
 var today = new Date();
 var hourNow = today.getHours();
@@ -389,9 +404,9 @@ function checkTime(i) {
 function getData(){
       $.ajax({
           type: 'GET',
-          url: 'asynchronous.php?id='+id+'&IID='+iid,
+          url: 'asynchronous.php?id='+uid+'&IID='+iid,
           success: function(data){
-            //console.log(data);
+            console.log(data);
               $('#chat').html(data);
                       var newscrollHeight = $("#chat")[0].scrollHeight - 20; //Scroll height after the request
                       //if(newscrollHeight > oldscrollHeight){
@@ -406,20 +421,21 @@ setInterval(function () {
     getData(); 
 }, 1000);  // it will refresh your data every 1 sec
 
-
 $("#chatMsg").on("submit", function(e) {
  var dataString = $(this).serialize();
   console.log(dataString);
   $.post('http://localhost:5000/api.php', dataString, function(response) {
     // Log the response to the console
-    //document.getElementById("textField").value = "";
-     console.log("Response: "+response);
+    document.getElementById("textField").value = "";
+    // console.log("Response: "+response);
     //location.reload();
-});
+ });
  e.preventDefault();
 });
 
+
 function start(){
+  startTime();
   getData();
 }
 </script>
