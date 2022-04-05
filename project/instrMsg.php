@@ -17,6 +17,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 body{
     background-color:white;
@@ -259,6 +261,9 @@ button {
 
 </style>
 </head>
+<body onload="start()">
+<input type="hidden" id="iid" name="iid" value=<?php echo $id?>> 
+
 <div class="topnav">
   <a href="#">Logout</a>
   <a href="#news">My Account</a>
@@ -285,23 +290,32 @@ button {
         <h4>(Users that have subscribed to you)</h4>
 
         <?php
-            for($i=0;$i<3;$i++){
-                echo "<button onclick=\"document.getElementById('id01').style.display='block'\">User</button>
+        $url = "http://localhost:5000/api.php?getMySubscriberIID=".$id;
+	
+        $client = curl_init($url);
+        curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+        $response = curl_exec($client);
+        $result2 = json_decode($response);
+
+            for($i=0;$i<count($result2->UID);$i++){
+                echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
                 <!-- The Modal -->
-                <div id='id01' class='modal'>
-                <span onclick=\"document.getElementById('id01').style.display='none'\"
+                <div id='".$i."' class='modal'>
+                <span onclick=\"document.getElementById('".$i."').style.display='none'\"
                 class=\"close\" title=\"Close Modal\" >&times;</span>
                 <!-- Modal Content -->
                 <form class='modal-content animate'>
-                    <div class='chat'>
-                        <div class='leftMe'>Instructor</div><div class='left'>Hello</div><br><br>
-                        <div class='rightThem'>User</div><div class='right'>Hi</div><br><br>
-                        <div class='leftMe'>Instructor</div><div class='left'>I messaged you the workout plan.</div><br><br>
-                        <div class='rightThem'>User</div><div class='right'>Thanks</div><br><br>
+                <input type='hidden' id='custId' name='custId' value=".$result2->UID[$i]."> 
+
+                    <div class='chat' id='chat'>
+                    
                     </div>
                     <div class='message'>
-                        <form>
-                            <input type='text'>
+                        <form id='chatMsg'>
+                        <input type='hidden' id='sender' name='sender' value='0'> 
+                        <input type='hidden' id='custIId' name='custIID' value=".$id."> 
+                        <input type='hidden' id='custId' name='custId' value=".$result2->UID[$i]."> 
+                            <input type='text' id='textField' name='textField' required>
                             <button type='submit'>Send</button>
                         </form>
                     </div>
@@ -315,6 +329,9 @@ button {
 
 </body>
 <script>
+  var iid = document.getElementById("iid").value;
+  var id = document.getElementById("custId").value;
+
 var today = new Date();
 var hourNow = today.getHours();
 var greeting;
@@ -364,5 +381,41 @@ function checkTime(i) {
   return i;
 }
 
+function getData(){
+      $.ajax({
+          type: 'GET',
+          url: 'asynchronous.php?id='+id+'&IID='+iid,
+          success: function(data){
+            //console.log(data);
+              $('#chat').html(data);
+                      var newscrollHeight = $("#chat")[0].scrollHeight - 20; //Scroll height after the request
+                      //if(newscrollHeight > oldscrollHeight){
+                       $("#chat").animate({ scrollTop: newscrollHeight }, 'normal'); //Autoscroll to bottom of div
+                  // }   
+              }
+          });
+      }
+getData();
+
+setInterval(function () {
+    getData(); 
+}, 1000);  // it will refresh your data every 1 sec
+
+
+$("#chatMsg").on("submit", function(e) {
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    //document.getElementById("textField").value = "";
+     console.log("Response: "+response);
+    //location.reload();
+});
+ e.preventDefault();
+});
+
+function start(){
+  getData();
+}
 </script>
 </html> 

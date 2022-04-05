@@ -639,6 +639,51 @@ if (isset($_GET['dietInfoID']) && $_GET['dietInfoID']!="") {
     }
 }
 
+if (isset($_GET['getMySubscriberIID']) && $_GET['getMySubscriberIID']!="" ) {
+	include('db.php');
+	$username = $_GET['getMySubscriberIID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT Users.Fname,Users.Lname,subscribe.UID FROM subscribe,Users WHERE subscribe.IID=? AND subscribe.UID=Users.ID");
+    $stmt->bind_param("i",$username);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $ids = array();
+    $fname = array();
+    $lname = array();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            // $DBusername = $row['Username'];
+            // $DBpsw = $row['pass'];
+            // if($DBusername == $username && $DBpsw == $password){
+            //     $loggedIn = true;
+            //     $id = $row['ID'];
+            //     responseLogin($loggedIn,$id);
+            //     mysqli_close($con);
+            // }
+            $id = $row['UID'];
+            $f = $row['Fname'];
+            $l = $row['Lname'];
+            array_push($ids,$id);
+            array_push($fname,$f);
+            array_push($lname,$l);
+        }
+    }
+
+    if($ids!=0 && $fname!=0 && $lname!=0){
+        responseMyUsersCard($ids,$fname,$lname);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
+
 
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
@@ -879,6 +924,13 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
         $json_response = json_encode($response);
         echo $json_response;
    }
+   function responseMyUsersCard($stmt,$fname,$lname){
+    $response['UID'] = $stmt;
+    $response['FName'] = $fname;
+    $response['LName'] = $lname;
+    $json_response = json_encode($response);
+    echo $json_response;
+    }
    function responseMyInstructorCard($stmt,$fname,$lname){
         $response['IID'] = $stmt;
         $response['FName'] = $fname;
