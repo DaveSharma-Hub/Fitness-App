@@ -400,7 +400,7 @@ getData();
 
 setInterval(function () {
     getData(); 
-}, 1000);  // it will refresh your data every 1 sec
+}, 2000);  // it will refresh your data every 1 sec
 
 $("#chatMsg").on("submit", function(e) {
  var dataString = $(this).serialize();
