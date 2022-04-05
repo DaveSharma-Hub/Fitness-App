@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -228,14 +229,18 @@ button{
                 else{
                     echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
                 }
-                echo "Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
+                echo "<form action = 'test.php' id='subscribeInst' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit'>Subscribe</button></p><input type='text' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
+                      <input type='hidden' id='UID' name='subscribeUID' value=".$result->userID.">";
+                // echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i].">";
+                // echo "Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
             }
         ?>
     </div>
+
     <div class="chat">
         
         <h1>Instructor Chat</h1>
-        <h4>(Instructors you have subscribed too)</h4>
+        <h4>(Instructors you have subscribed to)</h4>
 
         <?php
         $url = "http://localhost:5000/api.php?getMyInstructorUID=".$id;
@@ -352,5 +357,18 @@ new Chart("myChart2", {
     }
   }
 });
+
+// $("#subscribeInst").on("submit", function(e) {
+ 
+//  var dataString = $(this).serialize();
+//   console.log(dataString);
+//   $.post('http://localhost:5000/api.php', dataString, function(response) {
+//     // Log the response to the console
+//     console.log("Response: "+response);
+//     location.reload();
+// });
+//  e.preventDefault();
+// });
+
 </script>
 </html> 

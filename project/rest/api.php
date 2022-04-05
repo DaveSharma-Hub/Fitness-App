@@ -746,6 +746,18 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
      $stmt->execute();
      echo 1;
 }
+
+if (isset($_POST['subscribeIID']) && $_POST['subscribeIID']!="" &&isset($_POST['subscribeUID']) && $_POST['subscribeUID']!="" ){
+    include ('db.php');
+    $IID = $_POST['subscribeIID'];
+    $UID = $_POST['subscribeUID'];
+
+    $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?)");
+    $stmt->bind_param("ii",$IID, $UID);
+    $stmt->execute();
+    echo 1;
+}
+
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
