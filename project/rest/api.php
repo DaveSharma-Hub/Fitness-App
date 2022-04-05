@@ -684,6 +684,38 @@ if (isset($_GET['getMySubscriberIID']) && $_GET['getMySubscriberIID']!="" ) {
     }
 }
 
+if (isset($_GET['getReviewsIID']) && $_GET['getReviewsIID']!="" ) {
+	include('db.php');
+	$iid = $_GET['getReviewsIID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT review FROM Reviews WHERE IID = ?");
+    $stmt->bind_param("i", $iid);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $reviews = array();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $tmp = $row['review'];
+            array_push($reviews,$tmp);
+        }
+
+    }
+
+    if($reviews!=0){
+        responseReviews($reviews);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+}
+
 
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
@@ -856,6 +888,44 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
      $stmt->execute();
      echo 1;
 }
+
+if (isset($_POST['subscribeIID']) && $_POST['subscribeIID']!="" &&isset($_POST['subscribeUID']) && $_POST['subscribeUID']!="" ){
+    include ('db.php');
+    $IID = $_POST['subscribeIID'];
+    $UID = $_POST['subscribeUID'];
+
+    // $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?) WHERE NOT IN (SELECT * FROM subscribe WHERE IID = ? AND UID = ?)");
+    $stmt = $con->prepare("SELECT * FROM subscribe WHERE IID = ? AND UID = ?");
+    
+    $stmt->bind_param("ii",$IID, $UID);
+    $stmt->execute();
+
+    $stmt_result = $stmt->get_result();
+
+    if($stmt_result->num_rows>0){
+        echo 1;
+    }
+    else {
+        $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?)");
+        $stmt->bind_param("ii",$IID, $UID);
+        $stmt->execute();
+        echo 1;
+    }
+}
+
+if (isset($_POST['custIID']) && $_POST['custIID']!="" &&isset($_POST['custId']) && $_POST['custId']!=""&&isset($_POST['chatMsg']) && $_POST['chatMsg']!="" ){
+    include ('db.php');
+    $IID = $_POST['custIID'];
+    $UID = $_POST['custId'];
+    $MSG = $_POST['chatMsg'];
+
+    $stmt = $con->prepare("INSERT INTO Reviews (IID, UID, review) VALUES (?,?,?)");
+    
+    $stmt->bind_param("iis",$IID, $UID, $MSG);
+    $stmt->execute();
+    echo 1;
+}
+
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -975,6 +1045,11 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
 	function responseMessages($who,$msgArr){
         $response['msg'] = $msgArr;
         $response['user'] = $who;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
+   function responseReviews($reviews){
+        $response['review'] = $reviews;
         $json_response = json_encode($response);
         echo $json_response;
    }
