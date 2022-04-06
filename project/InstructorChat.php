@@ -286,7 +286,7 @@ button {
 <body onload="start()">
 <div class="topnav">
   <a href="instrLogin.php">Logout</a>
-  <a href="#news">My Account</a>
+  <a href="instructorMyAccount.php">My Account</a>
   <a class="active" href="instrMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
