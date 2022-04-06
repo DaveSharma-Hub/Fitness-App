@@ -25,7 +25,7 @@ if (isset($_GET['userID']) && $_GET['userID']!="") {
             $email = $row['Email'];
             $username = $row['Username'];
             $response_desc = $row['Age'];
-            response($order_id, $amount, $response_code,$response_desc,$email,$username);
+            responseL($order_id, $amount, $response_code,$response_desc,$email,$username);
             mysqli_close($con);
         }
     }
@@ -108,14 +108,14 @@ if (isset($_GET['sleepScheduleUID']) && $_GET['sleepScheduleUID']!="") {
 	
     $stmt->execute();
     $stmt_result = $stmt->get_result();
-    $max = 0;
-    $mon = 0;
-    $tue = 0;
-    $wed = 0;
-    $thur = 0;
-    $fri = 0;
-    $sat = 0;
-    $sun = 0;
+    $max = -1;
+    $mon = -1;
+    $tue = -1;
+    $wed = -1;
+    $thur = -1;
+    $fri = -1;
+    $sat = -1;
+    $sun = -1;
     if($stmt_result->num_rows>0){
        
         while($row = $stmt_result->fetch_array()){
@@ -124,7 +124,7 @@ if (isset($_GET['sleepScheduleUID']) && $_GET['sleepScheduleUID']!="") {
             // $email = $row['Email'];
             // $username = $row['Username'];
             // $response_desc = $row['Age'];
-            if($row['ID']>=$max){
+            //if($row['ID']>=$max){
                     $mon = $row['monday'];
                     $tue = $row['tuesday'];
                     $wed = $row['wednesday'];
@@ -133,10 +133,10 @@ if (isset($_GET['sleepScheduleUID']) && $_GET['sleepScheduleUID']!="") {
                     $sat = $row['saturday'];
                     $sun = $row['sunday'];
                     $max = $row['ID'];
-            }
+            //}
         }
     }
-    if($max!=0 &&$mon!=0&&$tue!=0&&$wed!=0&&$thur!=0&&$fri!=0&&$sat!=0&&$sun!=0){
+    if($mon!=-1&&$tue!=-1&&$wed!=-1&&$thur!=-1&&$fri!=-1&&$sat!=-1&&$sun!=-1){
         responseSleepSchedule($max,$mon,$tue,$wed,$thur,$fri,$sat,$sun);
         mysqli_close($con);
     }
@@ -295,7 +295,7 @@ if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
         }
     }
     if($cal>=0){
-        responseCalories($today);
+        responseCalories($cal);
         mysqli_close($con);
     }
     else{
@@ -684,7 +684,87 @@ if (isset($_GET['getMySubscriberIID']) && $_GET['getMySubscriberIID']!="" ) {
     }
 }
 
+if (isset($_GET['getMyFoodID']) && $_GET['getMyFoodID']!="" ) {
+	include('db.php');
+	$username = $_GET['getMyFoodID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM FoodItems WHERE UID=?;");
+    $stmt->bind_param("i",$username);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
 
+    $food = array();
+    $cal = array();
+    $sugar = array();
+    $fat = array();
+    $protein = array();
+    $carbs = array();
+    $sodium = array();
+
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $fi = $row['FoodItem'];
+            $c = $row['Calories'];
+            $su = $row['Sugar'];
+            $fa = $row['Fat'];
+            $p = $row['Protein'];
+            $car = $row['Carbohydrates'];
+            $so = $row['Sodium'];
+            array_push($food,$fi);
+            array_push($cal,$c);
+            array_push($sugar,$su);
+            array_push($fat,$fa);
+            array_push($protein,$p);
+            array_push($carbs,$car);
+            array_push($sodium,$so);
+        }
+    }
+
+    if($food!=0 && $cal!=0 && $sugar!=0&& $fat!=0 && $protein!=0 && $carbs!=0 && $sodium!=0){
+        responseMyFood($food,$cal,$sugar,$fat,$protein,$carbs,$sodium);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    response(NULL,NULL,NULL,NULL);
+    }
+}
+
+if (isset($_GET['getMyNotes']) && $_GET['getMyNotes']!="" ) {
+	include('db.php');
+	$username = $_GET['getMyNotes'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM SleepNotes WHERE UID=?;");
+    $stmt->bind_param("i",$username);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $notes = array();
+    $date = array();
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $n = $row['Notes'];
+            $d = $row['TodayDate'];
+            array_push($notes,$n);
+            array_push($date,$d);
+        }
+    }
+
+    if($notes!=0 && $date!=0){
+        responseMyNotes($notes,$date);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    response(NULL,NULL,NULL,NULL);
+    }
+}
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
 isset($_POST['myAccountEmail']) && $_POST['myAccountEmail']!="" &&
@@ -776,13 +856,26 @@ isset($_POST['wakeuptime']) && $_POST['wakeuptime']!="" ){
     $start = new DateTime($sleep);
     $end = new DateTime($wake);
     $sleepDiff = $start->diff($end);
-    $sleepHours = $sleepDiff->format("%H");
+    $sleepHours = (24-$sleepDiff->format("%H"));
     $weekday = date('w');
     $stmt = $con->prepare("INSERT INTO sleep_tracker (hours_slept, UID, TodayDate) VALUES (?,?,?) ON DUPLICATE KEY UPDATE hours_slept = ?");
     // //$result = mysqli_query($con,);
 	 $stmt->bind_param("iisi",$sleepHours,$Id,$today,$sleepHours);
      $stmt->execute();
-     echo 1;
+     //echo 1;
+     $stmt = $con->prepare("SELECT * FROM weekSleepSchedule WHERE UID=?");
+     // //$result = mysqli_query($con,);
+      $stmt->bind_param("i",$Id);
+      $stmt->execute();
+      //echo 1;
+      $stmt_result = $stmt->get_result();
+
+      if($stmt_result->num_rows==0){
+        $stmt = $con->prepare("INSERT INTO weekSleepSchedule (monday, tuesday,wednesday,thursday,friday,saturday,sunday,UID) VALUES(?,?,?,?,?,?,?,?);");
+        $time = 0;
+        $stmt->bind_param("iiiiiiii",$time,$time,$time,$time,$time,$time,$time,$Id);
+        $stmt->execute();
+      }
     if($weekday == 0){
         $stmt = $con->prepare("UPDATE weekSleepSchedule SET sunday=? WHERE UID = ?");
         $stmt->bind_param("ii",$sleepHours,$Id);
@@ -862,7 +955,16 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
         $json_response = json_encode($response);
         echo $json_response;
     }
-    function response($order_id,$amount,$response_code,$response_desc,$email,$username){
+    function response($order_id,$amount,$response_code,$response_desc){
+        $response['code'] = $order_id;
+        $response['Fname'] = $amount;
+        $response['Lname'] = $response_code;
+        $response['Age'] = $response_desc;
+
+        $json_response = json_encode(null);
+        echo $json_response;
+    }
+    function responseL($order_id,$amount,$response_code,$response_desc,$email,$username){
         $response['userID'] = $order_id;
         $response['Fname'] = $amount;
         $response['Lname'] = $response_code;
@@ -978,4 +1080,24 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
         $json_response = json_encode($response);
         echo $json_response;
    }
+   function responseMyFood($food,$cal,$sugar,$fat,$protein,$carbs,$sodium){
+        $response['food'] = $food;
+        $response['cal'] = $cal;
+        $response['sugar'] = $sugar;
+        $response['fat'] = $fat;
+        $response['protein'] = $protein;
+        $response['carbs'] = $carbs;
+        $response['sodium'] = $sodium;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
+
+   function responseMyNotes($notes,$date){
+        $response['notes'] = $notes;
+        $response['date'] = $date;
+        $json_response = json_encode($response);
+        echo $json_response;
+   }
+
+
 ?>

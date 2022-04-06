@@ -300,11 +300,11 @@ canvas {
 <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
 
 <body onload="start()">
-<div class="sticky">
+<!-- <div class="sticky"> -->
     <div class="topnav">
-    <a href="login.html">Logout</a>
+    <a href="login.php">Logout</a>
     <a href="myAccount.php">My Account</a>
-    <a class="active" href="#home">Home</a>
+    <a class="active" href="userMenu.php">Home</a>
     </div>
     <main class="container" id="mainContainer">
     <div id="col-1"></div>
@@ -321,7 +321,7 @@ canvas {
     <a href="diet.php" id="projects">Diet</a>
     <a href="instructor.php" id="contact">Instructor</a>
     </div>
-</div>
+<!-- </div> -->
 <div class="outside">
     <div class="title">
         <h2>Exercise Inputs<h2>
@@ -435,7 +435,7 @@ canvas {
     <div class="container">
 
       <label for="uname"><b>New BMI</b></label>
-      <input type="number" placeholder=<?php echo $resultP->bmi?> name="exerciseBMI" required>
+      <input type="number" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->bmi;}?> name="exerciseBMI" required>
         <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
       <button type="submit">Submit</button>
     </div>
@@ -455,8 +455,8 @@ canvas {
 
     <div class="container">
     <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
-      <label for="uname"><b>New Weight</b></label>
-      <input type="text" placeholder=<?php echo $resultP->weight." Lbs"?> name="exerciseWeight" required>
+      <label for="uname"><b>New Weight(Lbs)</b></label>
+      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->weight;}?> name="exerciseWeight" required>
 
       <button type="submit">Submit</button>
     </div>
@@ -475,10 +475,10 @@ canvas {
     </div>
 
     <div class="container">
-      <label for="uname"><b>New Height</b></label>
+      <label for="uname"><b>New Height (cm)</b></label>
       <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
 
-      <input type="text" placeholder=<?php echo $resultP->height." cm"?> name="height" required>
+      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->height;}?> name="height" required>
 
       <button type="submit">Submit</button>
     </div>
