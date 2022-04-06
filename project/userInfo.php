@@ -1,10 +1,11 @@
 <?php
     //include 'user.php';
     session_start();
-    $username = $_SESSION['login'];
+    $username = $_SESSION['id'];
     if($username==null){
-      header('Location: login.html');
+      header('Location: login.php');
     }
+    
 ?>
 <!DOCTYPE html>
 <html>

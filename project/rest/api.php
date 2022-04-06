@@ -801,6 +801,115 @@ if (isset($_GET['getReviewsIID']) && $_GET['getReviewsIID']!="" ) {
     }
 }
 
+if (isset($_GET['adminLogin']) && $_GET['adminLogin']!="" && isset($_GET['pass']) && $_GET['pass']!="") {
+	include('db.php');
+	$username = $_GET['adminLogin'];
+    $password = $_GET['pass'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Admin");
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            $DBusername = $row['Username'];
+            $DBpsw = $row['pass'];
+            if($DBusername == $username && $DBpsw == $password){
+                $loggedIn = true;
+                $id = $row['ID'];
+                responseLogin($loggedIn,$id);
+                mysqli_close($con);
+            }
+        }
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+	
+}
+
+if (isset($_GET['adminID']) && $_GET['adminID']!="" ) {
+	include('db.php');
+	$username = $_GET['adminID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Admin WHERE ID=?");
+	//$result = mysqli_query($con,);
+	$stmt->bind_param("i",$username);
+
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $fname=0;
+    $lname=0;
+    $age =0;
+    $email=0;
+    $username=0;
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            $fname = $row['Fname'];
+            $lname = $row['Lname'];
+            $age = $row['Age'];
+            $email = $row['Email'];
+            $username = $row['Username'];
+        }
+    }
+    if($fname!=0&&$lname!=0&&$age!=0&&$email!=0&&$username!=0){
+        responseAdminInfo($fname,$lname,$age,$email,$username);
+        mysqli_close($con);
+    }
+    else{
+        $loggedIn = false;
+	    responseLogin($loggedIn,NULL);
+    }
+	
+}
+
+if (isset($_GET['adminGetNoUsers']) && $_GET['adminGetNoUsers']!="" ) {
+	include('db.php');
+	$username = $_GET['adminGetNoUsers'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Users");
+	//$result = mysqli_query($con,);
+	// $stmt->bind_param("i",$username);
+
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $count=0;
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            $count++;
+        }
+    }
+    responseAdminUsers($count);
+    mysqli_close($con);
+}
+
+if (isset($_GET['adminGetNoInstructors']) && $_GET['adminGetNoInstructors']!="" ) {
+	include('db.php');
+	$username = $_GET['adminGetNoInstructors'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Instructor");
+	//$result = mysqli_query($con,);
+	// $stmt->bind_param("i",$username);
+
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $count=0;
+
+    if($stmt_result->num_rows>0){
+        while($row = $stmt_result->fetch_array()){
+            $count++;
+        }
+    }
+    responseAdminInstructor($count);
+    mysqli_close($con);
+}
+
+
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
 isset($_POST['myAccountEmail']) && $_POST['myAccountEmail']!="" &&
@@ -1023,6 +1132,29 @@ isset($_POST['instrMyAccountRole']) && $_POST['instrMyAccountRole']!="") {
      echo 1;
 }
 
+if (isset($_POST['myAccountAdminFname']) && $_POST['myAccountAdminFname']!="" &&
+isset($_POST['myAccountAdminLname']) && $_POST['myAccountAdminLname']!="" &&
+isset($_POST['myAccountAdminUsername']) && $_POST['myAccountAdminUsername']!="" &&
+isset($_POST['myAccountAdminEmail']) && $_POST['myAccountAdminEmail']!="" &&
+isset($_POST['myAccountAdminPsw']) && $_POST['myAccountAdminPsw']!=""&&
+isset($_POST['myAccountAdminAge']) && $_POST['myAccountAdminAge']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $fname = $_POST['myAccountAdminFname'];
+     $lname = $_POST['myAccountAdminLname'];
+     $username = $_POST['myAccountAdminUsername'];
+     $email = $_POST['myAccountAdminEmail'];
+     $password = $_POST['myAccountAdminPsw'];
+     $age = $_POST['myAccountAdminAge'];
+     $Id = $_POST['custId'];
+     $pid = 1;
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE Admin SET Fname =?,Lname=?, Username=?, Email=?, pass=?,Age=? WHERE ID = ?");
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("sssssii",$fname,$lname,$username,$email,$password,$age,$Id);
+     $stmt->execute();
+     echo 1;
+}
 
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
@@ -1179,7 +1311,29 @@ isset($_POST['instrMyAccountRole']) && $_POST['instrMyAccountRole']!="") {
     $response['review'] = $reviews;
     $json_response = json_encode($response);
     echo $json_response;
-}
+    }
+
+    function responseAdminInfo($fname,$lname,$age,$email,$username){
+        $response['fname']=$fname;
+        $response['lname']=$lname;
+        $response['age']=$age;
+        $response['email']=$email;
+        $response['username']=$username;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseAdminUsers($count){
+        $response['count']=$count;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseAdminInstructor($count){
+        $response['count']=$count;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
 
 
 ?>

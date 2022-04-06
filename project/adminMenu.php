@@ -1,10 +1,17 @@
 <?php
     //include 'user.php';
     session_start();
-    $username = $_SESSION['login'];
-    if($username==null){
-      header('Location: login.html');
+    $id = $_SESSION['adid'];
+    if($id==null){
+      header('Location: adminLogin.html');
     }
+
+    $url = "http://localhost:5000/api.php?adminID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,6 +22,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
 body{
@@ -141,18 +149,20 @@ body{
 }
 </style>
 </head>
-<body onload="startTime()">
+<body onload="start()">
+<input type="hidden" id="custId" name="custId" value=<?php echo $id?>> 
+
 <div class="topnav">
-  <a href="#">Logout</a>
-  <a href="#news">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a href="adminLogin.html">Logout</a>
+  <a href="adminMyAccount.php">My Account</a>
+  <a class="active" href="adminMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome Admin <?php echo $username ?></h3>
+  <h3>Welcome Admin <?php echo $result->fname." ".$result->lname ?></h3>
 </div>
 <div id="txt"></div>
 
@@ -165,7 +175,15 @@ body{
 
 <div class="Ureport">
     <h1>User Report</h1>
-    <p>Number of users: 100</p>
+    <p>Number of users: <?php
+
+    $url = "http://localhost:5000/api.php?adminGetNoUsers=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultC = json_decode($response);
+    echo $resultC->count;
+    ?></p>
     <div style="position:relative;">
     <canvas id="myChartBarUser" style="max-width:400px;left:0"></canvas>
     </div>
@@ -173,7 +191,16 @@ body{
 
 <div class="Ireport">
     <h1>Instructor Report</h1>
-    <p>Number of instructors: 8</p>
+    <p>Number of instructors: <?php
+
+    $url = "http://localhost:5000/api.php?adminGetNoInstructors=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultC = json_decode($response);
+    echo $resultC->count;
+  ?>
+</p>
     <div style="position:relative;">
     <canvas id="myChartBarInst" style="max-width:400px;left:0"></canvas>
     </div>
@@ -182,6 +209,8 @@ body{
 
 </body>
 <script>
+  var id = document.getElementById("custId").value;
+
 var today = new Date();
 var hourNow = today.getHours();
 var greeting;
@@ -258,48 +287,123 @@ new Chart("myChart", {
 var xValues = [50,60,70,80,90,100,110,120,130,140,150];
 var yValues = [7,8,8,9,9,9,10,11,14,14,15];
 
-var xValuesU = ["Active Users", "Non-Active Users"];
-var yValuesU = [100, 10];
-var barColorsU = ["green", "red"];
+var xValuesU = ["Total Number Of Users"];
+var barColorsU = ["green"];
+var xValuesI = ["Total Number Of Users"];
+var barColorsI = ["purple"];
 
-new Chart("myChartBarUser", {
-  type: "bar",
-  data: {
-    labels: xValuesU,
-    datasets: [{
-      backgroundColor: barColorsU,
-      data: yValuesU
-    }]
-  },
-  options: {
-    legend: {display: false},
-    title: {
-      display: true,
-      text: "User Account Information"
-    }
-  }
-});
+function barChart(){
+  
+  //   const xmlhttp = new XMLHttpRequest();
+  //   xmlhttp.onload = function() {
+  //     json=this.responseText;
+  //   }
+  // xmlhttp.open("GET", "http://localhost:5000/api.php?sleepUID="+id);
+  // xmlhttp.send();
+    $.ajax({
+          url: "http://localhost:5000/api.php?adminGetNoUsers="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    if(res==null){return [0];}
+                    else{return e.count;}
+              });;
+              // var arr = [4, 6, 6, 5, 5.5, 8, 9];
+              //console.log(arr);
+              // console.log(data);
+              new Chart("myChartBarUser", {
+                type: "bar",
+                data: {
+                  labels: xValuesU,
+                  datasets: [{
+                    backgroundColor: barColorsU,
+                    data: data
+                  }]
+                },
+                options: {
+                  legend: {display: false},
+                  title: {
+                    display: true,
+                    text: "User Account Information"
+                  }
+                }
+              }); 
+          }
+      });
+}
+function barChart2(){
+  
+  //   const xmlhttp = new XMLHttpRequest();
+  //   xmlhttp.onload = function() {
+  //     json=this.responseText;
+  //   }
+  // xmlhttp.open("GET", "http://localhost:5000/api.php?sleepUID="+id);
+  // xmlhttp.send();
+    $.ajax({
+          url: "http://localhost:5000/api.php?adminGetNoInstructors="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    if(res==null){return [0];}
+                    else{return e.count;}
+              });;
+              // var arr = [4, 6, 6, 5, 5.5, 8, 9];
+              //console.log(arr);
+              // console.log(data);
+              new Chart("myChartBarInst", {
+                type: "bar",
+                data: {
+                  labels: xValuesI,
+                  datasets: [{
+                    backgroundColor: barColorsI,
+                    data: data
+                  }]
+                },
+                options: {
+                  legend: {display: false},
+                  title: {
+                    display: true,
+                    text: "Instructor Account Information"
+                  }
+                }
+              }); 
+          }
+      });
+}
 
-var xValuesI = ["Active Instructors", "Non-Active Instructors"];
-var yValuesI = [10, 3];
-var barColorsI = ["green", "red"];
 
-new Chart("myChartBarInst", {
-  type: "bar",
-  data: {
-    labels: xValuesI,
-    datasets: [{
-      backgroundColor: barColorsI,
-      data: yValuesI
-    }]
-  },
-  options: {
-    legend: {display: false},
-    title: {
-      display: true,
-      text: "Instructor Account Information"
-    }
-  }
-});
+
+// new Chart("myChartBarInst", {
+//   type: "bar",
+//   data: {
+//     labels: xValuesI,
+//     datasets: [{
+//       backgroundColor: barColorsI,
+//       data: yValuesI
+//     }]
+//   },
+//   options: {
+//     legend: {display: false},
+//     title: {
+//       display: true,
+//       text: "Instructor Account Information"
+//     }
+//   }
+// });
+
+
+function start(){
+  startTime();
+  barChart();
+  barChart2();
+}
 </script>
 </html> 
