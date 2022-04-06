@@ -288,6 +288,12 @@ button:hover {
 }
 .textbox{
   text-align: center;
+  float:left;
+}
+table{
+  width:50%;
+  float:right;
+  overflow-y:auto;
 }
 </style>
 </head>
@@ -295,16 +301,16 @@ button:hover {
 <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
 
 <div class="topnav">
-  <a href="login.html">Logout</a>
+  <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome <?php echo $result->Fname." ".$result->Lname ?></h3>
+  <h3>Diet Tracker for <?php echo $result->Fname." ".$result->Lname ?></h3>
 </div>
 <div id="txt"></div>
 
@@ -317,10 +323,48 @@ button:hover {
 
 <div style="position:relative;">
     <canvas id="myChart" style="max-width:300px;left:0"></canvas>
-    <canvas id="myChart2" style="max-width:500px;left:0"></canvas>
+    <!-- <canvas id="myChart2" style="max-width:500px;left:0"></canvas> -->
+    <table>
+      <?php 
+    
+      $url = "http://localhost:5000/api.php?getMyFoodID=".$id;
+      
+      $client = curl_init($url);
+      curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+      $response = curl_exec($client);
+      $resultF = json_decode($response);
+      ?>
+  <tr>
+    <th>Food Item</th>
+    <th>Calories</th>
+    <th>Sugar</th>
+    <th>Fat</th>
+    <th>Protein</th>
+    <th>Carbohydrates</th>
+    <th>Sodium</th>
+
+  </tr>
+  <?php 
+  if($resultF==null){
+    $size=0;
+  }else{
+    $size = count($resultF->food);
+  }
+  for($i=0;$i<$size;$i++){ ?>
+  <tr>
+    <td><?php echo $resultF->food[$i]?></td>
+    <td><?php echo $resultF->cal[$i]?></td>
+    <td><?php echo $resultF->sugar[$i]?></td>
+    <td><?php echo $resultF->fat[$i]?></td>
+    <td><?php echo $resultF->protein[$i]?></td>
+    <td><?php echo $resultF->carbs[$i]?></td>
+    <td><?php echo $resultF->sodium[$i]?></td>
+  </tr>
+  <?php } ?>
+</table>
 </div>
 <div class = "textbox">
-  <h1>Your Daily Calorie Intake is:</h1>
+  <h1>Daily Calorie Intake:</h1>
   <?php
     $url = "http://localhost:5000/api.php?dietCalID=".$id;
     $client = curl_init($url);
@@ -485,7 +529,22 @@ function pieChart(){
 
 function start(){
   pieChart();
+  startTime();
+}
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
 
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
 }
 </script>
 </html> 

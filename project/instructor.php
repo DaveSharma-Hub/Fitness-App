@@ -179,7 +179,7 @@ button{
 <div class="topnav">
   <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>

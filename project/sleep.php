@@ -261,7 +261,30 @@ tr:nth-child(even) {
         <button type="submit">Save</button>
     </form>
 </div>
-
+<div class="notes">
+<table>
+  <h3>My Notes</h3>
+  <tr>
+    <th>Date</th>
+    <th>Notes</th>
+  </tr>
+  <?php
+    $url = "http://localhost:5000/api.php?getMyNotes=".$id;
+    
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultN = json_decode($response);
+    for($i=0;$i<count($resultN->notes);$i++){ ?>
+  
+  <tr>
+    <td><?php if($resultN==null){echo 0;}else{echo $resultN->date[$i];}?></td>
+    <td><?php if($resultN==null){echo 0;}else{echo $resultN->notes[$i];}?></td>
+  </tr>
+    <?php } ?>
+    </table>
+<br><br><br>
+</div>
 <table>
   <tr>
     <th>Legend</th>
@@ -276,23 +299,23 @@ tr:nth-child(even) {
   </tr>
   <tr>
     <td>Recommended Hours</td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
-    <td><?php echo $result3->time?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->time;}?></td>
   </tr>
   <tr>
     <td>Hours Slept</td>
-    <td><?php echo $result2->mon ?></td>
-    <td><?php echo $result2->tue ?></td>
-    <td><?php echo $result2->wed ?></td>
-    <td><?php echo $result2->thur ?></td>
-    <td><?php echo $result2->fri ?></td>
-    <td><?php echo $result2->sat ?></td>
-    <td><?php echo $result2->sun ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->mon;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->tue;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->wed;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->thur;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->fri;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->sat;} ?></td>
+    <td><?php if($result2==null){echo 0;}else{echo $result2->sun;} ?></td>
   </tr>
 </table>
 
@@ -340,30 +363,37 @@ var id = document.getElementById("custId").value;
               //json = res;
               //alert(res);
               var data = [res].map(function(e) {
-                    return e.mon;
+                    if(res==null){return [0];}
+                    else{return e.mon;}
               });;
                data2 = [res].map(function(e) {
-                    return e.tue;
-              });;
-              data.push(data2[0]);
-               data2 = [res].map(function(e) {
-                    return e.wed;
+                  if(res==null){return [0];}  
+                  else{return e.tue;}
               });;
               data.push(data2[0]);
                data2 = [res].map(function(e) {
-                    return e.thur;
+                if(res==null){return [0];}    
+                else{return e.wed;}
               });;
               data.push(data2[0]);
                data2 = [res].map(function(e) {
-                    return e.fri;
+                if(res==null){return [0];}    
+                else{return e.thur;}
               });;
               data.push(data2[0]);
                data2 = [res].map(function(e) {
-                    return e.sat;
+                if(res==null){return [0];}    
+                else{return e.fri;}
               });;
               data.push(data2[0]);
                data2 = [res].map(function(e) {
-                    return e.sun;
+                if(res==null){return [0];}   
+                else{return e.sat;}
+              });;
+              data.push(data2[0]);
+               data2 = [res].map(function(e) {
+                if(res==null){return [0];}    
+                else{return e.sun;}
               });;
               data.push(data2[0]);
               // var arr = [4, 6, 6, 5, 5.5, 8, 9];
@@ -422,7 +452,11 @@ function pieChartInfo(){
               //json = res;
               //alert(res);
               var data = [res].map(function(e) {
-                    return e.hours_slept;
+                     if(res==null){
+                       return [0];
+                     }else{
+                        return e.hours_slept;
+                     }
               });;
               var xHours = ["Percentage of Hours Slept", "Percentage of Remaining Hours for Recommended"];
               var yValues = [data/8*100,(1-(data/8))*100];
@@ -485,6 +519,7 @@ function pieChartInfo(){
 function start() {
   pieChartInfo();
   scatterChartInfo();
+  startTime();
 }
 $("#sleep").on("submit", function(e) {
  
@@ -508,6 +543,21 @@ $("#notes").on("submit", function(e) {
 });
  e.preventDefault();
 });
+function startTime() {
+  const today = new Date();
+  let h = today.getHours();
+  let m = today.getMinutes();
+  let s = today.getSeconds();
+  m = checkTime(m);
+  s = checkTime(s);
+  document.getElementById('txt').innerHTML =  h + ":" + m + ":" + s;
+  setTimeout(startTime, 1000);
+}
+
+function checkTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
 </script>
 
 </html> 
