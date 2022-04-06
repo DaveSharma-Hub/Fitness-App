@@ -265,8 +265,8 @@ button {
 <input type="hidden" id="iid" name="iid" value=<?php echo $id?>> 
 
 <div class="topnav">
-  <a href="#">Logout</a>
-  <a href="#news">My Account</a>
+  <a href="instrLogin.php">Logout</a>
+  <a href="instructorMyAccount.php">My Account</a>
   <a class="active" href="instrMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">

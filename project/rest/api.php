@@ -50,7 +50,10 @@ if (isset($_GET['instrID']) && $_GET['instrID']!="") {
             $Fname = $row['FName'];
             $Lname = $row['LName'];
             $user = $row['username'];
-            responseInstrLogin($Fname, $Lname, $user, $id);
+            $role = $row['role'];
+            $email = $row['Email'];
+
+            responseInstrLogin($Fname, $Lname, $user, $id, $role, $email);
             mysqli_close($con);
         }
     }
@@ -820,30 +823,6 @@ isset($_POST['myAccountPsw']) && $_POST['myAccountPsw']!="") {
 	 $stmt->bind_param("ssisssii",$fname,$lname,$age,$username,$psw,$email,$aid,$Id);
      $stmt->execute();
      echo 1;
-    // $stmt_result = $stmt->get_result();
-    // $cal = array();
-    // $ing = array();
-    // $steps = array();
-    // $name = array();
-    // if($stmt_result->num_rows>0){
-    //     while($row = $stmt_result->fetch_array()){
-    //         // $steps = $row['steps'];
-    //         // $ingredients = $row['ingredients'];
-    //         // $calories = $row['calories'];
-    //         array_push($cal, $row['calories']);
-    //         array_push($ing, $row['ingredients']);
-    //         array_push($steps, $row['steps']);
-    //         array_push($name, $row['name']);
-    //     }
-    // }
-    // if($cal != 0 && $ing != 0 && $steps != 0 && $name != 0){
-    //     responseCard($cal, $ing, $steps, $name);
-    //     mysqli_close($con);
-    // }
-    // else{
-    //     response(NULL, NULL, 200, "No Record Found");
-    // }
-	
 }
 if (isset($_POST['food_item']) && $_POST['food_item']!="" &&
 isset($_POST['cals']) && $_POST['cals']!="" &&
@@ -1020,6 +999,30 @@ if (isset($_POST['custIID']) && $_POST['custIID']!="" &&isset($_POST['custId']) 
     echo 1;
 }
 
+if (isset($_POST['instrMyAccountFname']) && $_POST['instrMyAccountFname']!="" &&
+isset($_POST['instrMyAccountLname']) && $_POST['instrMyAccountLname']!="" &&
+isset($_POST['instrMyAccountUsername']) && $_POST['instrMyAccountUsername']!="" &&
+isset($_POST['instrMyAccountEmail']) && $_POST['instrMyAccountEmail']!="" &&
+isset($_POST['instrMyAccountPsw']) && $_POST['instrMyAccountPsw']!=""&&
+isset($_POST['instrMyAccountRole']) && $_POST['instrMyAccountRole']!="") {
+    //echo "Testing";
+	 include('db.php');
+	 $fname = $_POST['instrMyAccountFname'];
+     $lname = $_POST['instrMyAccountLname'];
+     $username = $_POST['instrMyAccountUsername'];
+     $email = $_POST['instrMyAccountEmail'];
+     $password = $_POST['instrMyAccountPsw'];
+     $role = $_POST['instrMyAccountRole'];
+     $Id = $_POST['instrId'];
+     $pid = 1;
+    // //echo $order_id;
+    $stmt = $con->prepare("UPDATE Instructor SET Fname = ?,Lname=?, PID=?, username=?, Email=?, password=?, role=? WHERE IID = ?");
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("sssssssi",$fname,$lname,$pid,$username,$email,$password,$role,$Id);
+     $stmt->execute();
+     echo 1;
+}
+
 
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
@@ -1137,12 +1140,13 @@ if (isset($_POST['custIID']) && $_POST['custIID']!="" &&isset($_POST['custId']) 
         echo $json_response;
     }
 
-    function responseInstrLogin($Fname, $Lname, $user, $id){
+    function responseInstrLogin($Fname, $Lname, $user, $id, $role, $email){
         $response['Fname'] = $Fname;
         $response['Lname'] = $Lname;
         $response['user'] = $user;
         $response['IID'] = $id;
-        
+        $response['role'] = $role;
+        $response['Email'] = $email;
         $json_response = json_encode($response);
         echo $json_response;
     }

@@ -7,7 +7,7 @@
     // }
     session_start();
     $id = $_SESSION['id'];//1 ;// FROM THE SESSION 
-    $url = "http://localhost:5000/api.php?userID=".$id;
+    $url = "http://localhost:5000/api.php?instrID=".$id;
 	
     $client = curl_init($url);
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
@@ -244,9 +244,9 @@ button:hover {
 </head>
 <body onload="startTime()">
 <div class="topnav">
-  <a href="login.php">Logout</a>
-  <a href="">My Account</a>
-  <a class="active" href="userMenu.php">Home</a>
+  <a href="instrLogin.php">Logout</a>
+  <a href="instructorMyAccount.php">My Account</a>
+  <a class="active" href="instrMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
@@ -258,10 +258,10 @@ button:hover {
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">
-  <a href="exercise.php" id="about">Exercise</a>
-  <a href="sleep.php" id="blog">Sleep</a>
-  <a href="diet.php" id="projects">Diet</a>
-  <a href="instructor.php" id="contact">Instructor</a>
+  <a href="instrExercise.php" id="about">Update Exercise</a>
+  <a href="instrSleep.php" id="blog">Update Sleep</a>
+  <a href="instrDiet.php" id="projects">Update Diet</a>
+  <a href="instrMsg.php" id="contact">Messages</a>
 </div>
 
 <h1 style = "text-align:center"> About Me </h1>
@@ -275,16 +275,16 @@ button:hover {
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'"
 class="close" title="Close Modal">&times;</span>
-  <form class="modal-content animate" id="foo" action="" method="POST"> 
+  <form class="modal-content animate" id="updateInstrInfo" action="" method="POST"> 
     <!-- action="http://localhost:5000/api.php" method="post"> -->
     <div class="modal-container">
-     <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
-      First Name<input type="text" placeholder=<?php echo $result->Fname?> name="myAccountFname" required><br>
-      Last Name<input type="text" placeholder=<?php echo $result->Lname?> name="myAccountLname" required><br>
-      Username<input type="text" placeholder=<?php echo $result->Username?> name="myAccountUsername" required><br>
-      Email<input type="text" placeholder=<?php echo $result->Email?> name="myAccountEmail" required><br>
-      Password<input type="password" placeholder="********" name="myAccountPsw" required><br>
-      Age<input type="text" placeholder=<?php echo $result->Age?> name="myAccountAge" required><br>
+     <input type="hidden" id="instrId" name="instrId" value=<?php echo $result->IID?>> 
+      First Name<input type="text" placeholder=<?php echo $result->Fname?> name="instrMyAccountFname" required><br>
+      Last Name<input type="text" placeholder=<?php echo $result->Lname?> name="instrMyAccountLname" required><br>
+      Username<input type="text" placeholder=<?php echo $result->user?> name="instrMyAccountUsername" required><br>
+      Email<input type="text" placeholder=<?php echo $result->Email?> name="instrMyAccountEmail" required><br>
+      Password<input type="password" placeholder="********" name="instrMyAccountPsw" required><br>
+      Role<input type="text" placeholder=<?php echo $result->role?> name="instrMyAccountRole" required><br>
       <button type="submit">Save</button>
     </div>
     <div>
@@ -313,7 +313,7 @@ class="close" title="Close Modal">&times;</span>
         <h2>Username</h2>
     </div>
     <div class="column right">
-        <h3><?php echo $result->Username?></h3>
+        <h3><?php echo $result->user?></h3>
     </div>
 
     <div class="row">
@@ -334,12 +334,11 @@ class="close" title="Close Modal">&times;</span>
 
     <div class="row">
     <div class="column left">
-        <h2>Age</h2>
+        <h2>Role</h2>
     </div>
     <div class="column right">
-        <h3><?php echo $result->Age?></h3>
+        <h3><?php echo $result->role?></h3>
     </div>
-
 </div>
 
 
@@ -394,7 +393,7 @@ function checkTime(i) {
   return i;
 }
 
-$("#foo").on("submit", function(e) {
+$("#updateInstrInfo").on("submit", function(e) {
  
  var dataString = $(this).serialize();
   
@@ -405,20 +404,6 @@ $("#foo").on("submit", function(e) {
     console.log("Response: "+response);
     location.reload(); 
 });
-//  $.ajax({
-//    type: "POST",
-//    url: "http://localhost:5000/api.php",
-//    data: dataString,
-//    success: function () {
-//      alert("Good job");
-//    },
-
-
-//    error: function(jqXHR, textStatus, errorThrown) {
-//            console.log(textStatus, errorThrown);
-//       }
-//  });
-
  e.preventDefault();
 });
 
