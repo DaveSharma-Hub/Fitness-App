@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 body{
     background-color:white;
@@ -179,7 +180,7 @@ button{
 <div class="topnav">
   <a href="login.php">Logout</a>
   <a href="myAccount.php">My Account</a>
-  <a class="active" href="userMenu.php">Home</a>
+  <a class="active" href="#home">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
@@ -207,7 +208,7 @@ button{
           curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
           $response = curl_exec($client);
           $result2 = json_decode($response);
-
+          echo "<input type='hidden' id='custId' name='custId' value=".count($result2->ids).">"; 
             for($i=0;$i<count($result2->ids);$i++){
                 echo "<p>";
                 if($result2->star[$i]==0){
@@ -228,7 +229,9 @@ button{
                 else{
                     echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
                 }
-                echo "Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<a href='#'>Subscribe</a>&nbsp&nbsp<a id='review' href='#'>Reviews</a></p>";
+                echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit'>Subscribe</button></p><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
+                <input type='hidden' id='UID' name='subscribeUID' value=".$result->userID."></form>";
+                echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i]."></form>";
             }
         ?>
     </div>
@@ -246,7 +249,7 @@ button{
         $result3 = json_decode($response);
         
             for($i=0;$i<count($result3->IID);$i++){
-                echo "<form action='chat.php' method='post'><p>Instructor ".$result3->FName[$i]." ".$result3->LName[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type='Submit'>Chat</button></p><input type='hidden' id='IID' name='IID' value=".$result3->IID[$i]."> 
+                echo "<form action='chat.php' id = 'charInst' method='post'><p>Instructor ".$result3->FName[$i]." ".$result3->LName[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type='Submit'>Chat</button></p><input type='hidden' id='IID' name='IID' value=".$result3->IID[$i]."> 
                 <input type='hidden' id='ifname' name='ifname' value=".$result3->FName[$i]."><input type='hidden' id='ilname' name='ilname' value=".$result3->LName[$i]."></form>";
             }
             //WE CAN MAKE THE ABOVE 2 INTO A FORM!!!!!!!!!!
@@ -352,5 +355,24 @@ new Chart("myChart2", {
     }
   }
 });
+
+var id = document.getElementById("custId").value;
+
+for (let i = 0; i < id; i++){
+  var str = "#subscribeInst".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+    location.reload();
+});
+ e.preventDefault();
+});
+}
+
+
 </script>
 </html> 
