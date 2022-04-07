@@ -909,6 +909,44 @@ if (isset($_GET['adminGetNoInstructors']) && $_GET['adminGetNoInstructors']!="" 
     mysqli_close($con);
 }
 
+if (isset($_GET['getExcercisePlanUID']) && $_GET['getExcercisePlanUID']!="") {
+	include('db.php');
+	$UID = $_GET['getExcercisePlanUID'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM exercisePlan WHERE UID=?");
+    $stmt->bind_param("i",$UID);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $mon = "";
+    $tue = "";
+    $wed = "";
+    $thur = "";
+    $fri = "";
+    $sat = "";
+    $sun = "";
+    if($stmt_result->num_rows>0){
+       
+        while($row = $stmt_result->fetch_array()){
+            $mon = $row['monday'];
+            $tue = $row['tuesday'];
+            $wed = $row['wednesday'];
+            $thur = $row['thursday'];
+            $fri = $row['friday'];
+            $sat = $row['saturday'];
+            $sun = $row['sunday'];
+        }
+    }
+    if($mon!=""&&$tue!=""&&$wed!=""&&$thur!=""&&$fri!=""&&$sat!=""&&$sun!=""){
+        responseExercisePlan($mon,$tue,$wed,$thur,$fri,$sat,$sun);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
 
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
@@ -1156,6 +1194,32 @@ isset($_POST['myAccountAdminAge']) && $_POST['myAccountAdminAge']!="") {
      echo 1;
 }
 
+if (isset($_POST['exercisePlanMonday']) && $_POST['exercisePlanMonday']!="" &&
+isset($_POST['exercisePlanTuesday']) && $_POST['exercisePlanTuesday']!="" &&
+isset($_POST['exercisePlanWednesday']) && $_POST['exercisePlanWednesday']!="" &&
+isset($_POST['exercisePlanThursday']) && $_POST['exercisePlanThursday']!="" &&
+isset($_POST['exercisePlanFriday']) && $_POST['exercisePlanFriday']!=""&&
+isset($_POST['exercisePlanSaturday']) && $_POST['exercisePlanSaturday']!=""&&
+isset($_POST['exercisePlanSunday']) && $_POST['exercisePlanSunday']!="") {
+    //echo "Testing";
+    include('db.php');
+    $UID = $_POST['exercisePlanUID'];
+    $IID = $_POST['exercisePlanIID'];
+    $monday = $_POST['exercisePlanMonday'];
+    $tuesday = $_POST['exercisePlanTuesday'];
+    $wednesday = $_POST['exercisePlanWednesday'];
+    $thursday = $_POST['exercisePlanThursday'];
+    $friday = $_POST['exercisePlanFriday'];
+    $saturday = $_POST['exercisePlanSaturday'];
+    $sunday = $_POST['exercisePlanSunday'];
+
+    $stmt = $con->prepare("INSERT INTO exercisePlan (monday, tuesday, wednesday, thursday, friday, saturday, sunday, UID, IID) VALUES (?,?,?,?,?,?,?,?,?) ");
+
+    $stmt->bind_param("sssssssii",$monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $UID, $IID);
+    $stmt->execute();
+    echo 1;
+}
+
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -1331,6 +1395,18 @@ isset($_POST['myAccountAdminAge']) && $_POST['myAccountAdminAge']!="") {
 
     function responseAdminInstructor($count){
         $response['count']=$count;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseExercisePlan($mon,$tue,$wed,$thur,$fri,$sat,$sun){
+        $response['mon'] = $mon;
+        $response['tue']= $tue;
+        $response['wed']= $wed;
+        $response['thur']= $thur;
+        $response['fri']= $fri;
+        $response['sat']= $sat;
+        $response['sun']= $sun;
         $json_response = json_encode($response);
         echo $json_response;
     }

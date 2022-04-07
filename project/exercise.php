@@ -18,6 +18,13 @@
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
     $response = curl_exec($client);
     $resultP = json_decode($response);
+
+    $url = "http://localhost:5000/api.php?getExcercisePlanUID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result3 = json_decode($response);
     
 ?>
 <!DOCTYPE html>
@@ -88,6 +95,8 @@ body{
 #mySidenav a:hover {
   left: 0;
 }
+
+
 
 #about {
   top: 20px;
@@ -177,6 +186,22 @@ button {
   cursor: pointer;
   border-radius:10px;
   width: 100%;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }
 
 button:hover {
@@ -488,6 +513,31 @@ canvas {
     </div>
   </form>
 </div>
+
+<table>
+  <tr>
+    <th>Legend</th>
+    <th>Monday</th>
+    <th>Tuesday</th>
+    <th>Wednesday</th>
+    <th>Thursday</th>
+    <th>Friday</th>
+    <th>Saturday</th>
+    <th>Sunday</th>
+
+  </tr>
+  <tr>
+    <td>Recommended Exercise</td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->mon;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->tue;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->wed;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->thur;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->fri;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->sat;} ?></td>
+    <td><?php if($result3==null){echo 0;}else{echo $result3->sun;} ?></td>
+  </tr>
+</table>
+
 </body>
 <script>
 
