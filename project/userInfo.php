@@ -1,10 +1,17 @@
 <?php
     //include 'user.php';
     session_start();
-    $username = $_SESSION['id'];
-    if($username==null){
-      header('Location: login.php');
+    $id = $_SESSION['adid'];
+    if($id==null){
+      header('Location: adminLogin.html');
     }
+
+    $url = "http://localhost:5000/api.php?adminID=".$id;
+	
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $result = json_decode($response);
     
 ?>
 <!DOCTYPE html>
@@ -16,6 +23,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
 body{
@@ -88,12 +96,14 @@ body{
  display: flex;
  justify-content: center;
  align-items: center;
- height: 10vh;
+ /* height: 10vh; */
+ height:100%;
  font-family: 'Quicksand', cursive;
  font-size: 1em;
  color: #666;
  background:none;
  border:none;
+ width:90%;
 }
 .fa{
   margin-left: 20px;
@@ -148,7 +158,7 @@ body{
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  /* overflow: auto; Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   padding-top: 60px;
@@ -230,16 +240,16 @@ button:hover{
 </head>
 <body onload="startTime()">
 <div class="topnav">
-  <a href="#">Logout</a>
-  <a href="#news">My Account</a>
-  <a class="active" href="#home">Home</a>
+  <a href="adminLogin.html">Logout</a>
+  <a href="adminMyAccount.php">My Account</a>
+  <a class="active" href="adminMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3>Welcome Admin <?php echo $username ?></h3>
+  <h3>User Information</h3>
 </div>
 <div id="txt"></div>
 
@@ -253,28 +263,43 @@ button:hover{
 <div class="userInfo">
   <h2>Change User Information</h2>
 <?php
-  for($j=0;$j<5;$j++){
-    echo "<button onclick=\"document.getElementById('id01').style.display='block'\">View User".$j."</button>
+ $url = "http://localhost:5000/api.php?adminGetAllUsers=".$id;
+	
+ $client = curl_init($url);
+ curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+ $response = curl_exec($client);
+ $resultU = json_decode($response);
+
+ echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($resultU->ids).">";
+
+  for($j=0;$j<count($resultU->fname);$j++){
+    echo "<button onclick=\"document.getElementById('id".$j."').style.display='block'\">View User".$resultU->fname[$j]." ".$resultU->lname[$j]."</button>
     <!-- The Modal -->
-    <div id='id01' class='modal'>
-    <span onclick=\"document.getElementById('id01').style.display='none'\"
+    <div id='id".$j."' class='modal'>
+    <span onclick=\"document.getElementById('id".$j."').style.display='none'\"
     class=\"close\" title=\"Close Modal\">&times;</span>
     <div class='insideI'>
-        <h1>User ".$j."</h1>
-        <form class='modal-content animate' action='/action_page.php'>
+        <h1>User ".$resultU->fname[$j]." ".$resultU->lname[$j]."</h1>
+        <form class='modal-content animate' id='changeUsers".$j."'>
 
-    <div class='container'>
+    <input type='hidden' id='custId' name='custId' value=".$resultU->ids[$j]."> 
+
       <label for='uname'><b>Username</b></label>
-      <input type='text' placeholder='Enter Username' name='uname' required>
-
-      <label for='psw'><b>Password</b></label>
-      <input type='password' placeholder='Enter Password' name='psw' required>
+      <input type='text' placeholder=".$resultU->username[$j]." name='adminChangeUname' required><br><br>
+      <label for='fname'><b>First Name</b></label>
+      <input type='text' placeholder=".$resultU->fname[$j]." name='adminChangeFname' required><br><br>
+      <label for='lname'><b>Last Name</b></label>
+      <input type='text' placeholder=".$resultU->lname[$j]." name='adminChangeLname' required><br><br>
+      <label for='lname'><b>Age</b></label>
+      <input type='text' placeholder=".$resultU->age[$j]." name='adminChangeAge' required><br><br>
+      <label for='lname'><b>Email</b></label>
+      <input type='text' placeholder=".$resultU->email[$j]." name='adminChangeEmail' required><br><br>
 
       <button type='submit'>Update</button>
-    </div>
+      <button type='button' onclick=\"document.getElementById('id".$j."').style.display='none'\" class='cancelbtn'>Cancel</button>
   </form>
     </div>
-    </div>";
+  </div>";
    // <!-- Modal Content -->
   }
 ?>
@@ -331,6 +356,23 @@ function checkTime(i) {
   return i;
 }
 
+var id = document.getElementById("totalNum").value;
+
+for (let i = 0; i < id; i++){
+  var str = "#changeUsers".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    console.log("Response: "+response);
+
+    location.reload();
+});
+ e.preventDefault();
+});
+}
 
 </script>
 </html> 

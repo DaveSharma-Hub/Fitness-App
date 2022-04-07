@@ -947,6 +947,93 @@ if (isset($_GET['getExcercisePlanUID']) && $_GET['getExcercisePlanUID']!="") {
     }
 }
 
+if (isset($_GET['adminGetAllUsers']) && $_GET['adminGetAllUsers']!="") {
+	include('db.php');
+	$order_id = $_GET['adminGetAllUsers'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Users");
+    // $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $fname = array();
+    $lname = array();
+    $email = array();
+    $username = array();
+    $age = array();
+    $ids = array();
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $amount = $row['Fname'];
+            $response_code = $row['Lname'];
+            $e = $row['Email'];
+            $u = $row['Username'];
+            $response_desc = $row['Age'];
+            $id = $row['ID']; 
+            array_push($fname,$amount);
+            array_push($lname,$response_code);
+            array_push($email,$e);
+            array_push($username,$u);
+            array_push($age,$response_desc);
+            array_push($ids,$id);
+        }
+    }
+
+    if($fname!=0&&$lname!=0&&$email!=0&&$username!=0&&$age!=0&&$ids!=0){
+        responseAllUsers($fname, $lname, $email,$username,$age,$ids);
+        mysqli_close($con);
+    }
+    else{
+	 response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
+if (isset($_GET['adminGetAllInstructors']) && $_GET['adminGetAllInstructors']!="") {
+	include('db.php');
+	$order_id = $_GET['adminGetAllInstructors'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM Instructor");
+    // $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $fname = array();
+    $lname = array();
+    $email = array();
+    $username = array();
+    $role = array();
+    $ids = array();
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $amount = $row['FName'];
+            $response_code = $row['LName'];
+            $e = $row['Email'];
+            $u = $row['username'];
+            $response_desc = $row['role'];
+            $id = $row['IID']; 
+            array_push($fname,$amount);
+            array_push($lname,$response_code);
+            array_push($email,$e);
+            array_push($username,$u);
+            array_push($role,$response_desc);
+            array_push($ids,$id);
+        }
+    }
+
+    if($fname!=0&&$lname!=0&&$email!=0&&$username!=0&&$role!=0&&$ids!=0){
+        responseAllInstructos($fname, $lname, $email,$username,$role,$ids);
+        mysqli_close($con);
+    }
+    else{
+	 response(NULL, NULL, 200,"No Record Found");
+    }
+}
 
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
@@ -1220,6 +1307,48 @@ isset($_POST['exercisePlanSunday']) && $_POST['exercisePlanSunday']!="") {
     echo 1;
 }
 
+if (isset($_POST['adminChangeUname']) && $_POST['adminChangeUname']!="" &&
+isset($_POST['adminChangeFname']) && $_POST['adminChangeFname']!="" &&
+isset($_POST['adminChangeLname']) && $_POST['adminChangeLname']!="" &&
+isset($_POST['adminChangeAge']) && $_POST['adminChangeAge']!="" &&
+isset($_POST['adminChangeEmail']) && $_POST['adminChangeEmail']!="") {
+    //echo "Testing";
+    include('db.php');
+    $uname = $_POST['adminChangeUname'];
+    $fname = $_POST['adminChangeFname'];
+    $lname = $_POST['adminChangeLname'];
+    $age = $_POST['adminChangeAge'];
+    $email = $_POST['adminChangeEmail'];
+    $id = $_POST['custId'];
+
+    $stmt = $con->prepare("UPDATE Users SET Username=?,Fname=?,Lname=?,Age=?,Email=? Where ID=? ");
+    $stmt->bind_param("sssisi",$uname,$fname, $lname, $age, $email, $id);
+    
+    $stmt->execute();
+    echo 1;
+}
+
+if (isset($_POST['adminChangeIUname']) && $_POST['adminChangeIUname']!="" &&
+isset($_POST['adminChangeIFname']) && $_POST['adminChangeIFname']!="" &&
+isset($_POST['adminChangeILname']) && $_POST['adminChangeILname']!="" &&
+isset($_POST['adminChangeIRole']) && $_POST['adminChangeIRole']!="" &&
+isset($_POST['adminChangeIEmail']) && $_POST['adminChangeIEmail']!="") {
+    //echo "Testing";
+    include('db.php');
+    $uname = $_POST['adminChangeIUname'];
+    $fname = $_POST['adminChangeIFname'];
+    $lname = $_POST['adminChangeILname'];
+    $role = $_POST['adminChangeIRole'];
+    $email = $_POST['adminChangeIEmail'];
+    $id = $_POST['custId'];
+
+    $stmt = $con->prepare("UPDATE Instructor SET username=?,FName=?,LName=?,role=?,Email=? Where IID=? ");
+    $stmt->bind_param("sssssi",$uname,$fname, $lname, $role, $email, $id);
+    
+    $stmt->execute();
+    echo 1;
+}
+
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
@@ -1407,6 +1536,27 @@ isset($_POST['exercisePlanSunday']) && $_POST['exercisePlanSunday']!="") {
         $response['fri']= $fri;
         $response['sat']= $sat;
         $response['sun']= $sun;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+    function responseAllUsers($fname, $lname, $email,$username,$age,$ids){
+        $response['fname'] = $fname;
+        $response['lname']= $lname;
+        $response['email']= $email;
+        $response['username']= $username;
+        $response['age']= $age;
+        $response['ids'] = $ids;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseAllInstructos($fname, $lname, $email,$username,$role,$ids){
+        $response['fname'] = $fname;
+        $response['lname']= $lname;
+        $response['email']= $email;
+        $response['username']= $username;
+        $response['role']= $role;
+        $response['ids'] = $ids;
         $json_response = json_encode($response);
         echo $json_response;
     }
