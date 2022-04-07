@@ -524,7 +524,6 @@ canvas {
     <th>Friday</th>
     <th>Saturday</th>
     <th>Sunday</th>
-
   </tr>
   <tr>
     <td>Recommended Exercise</td>
