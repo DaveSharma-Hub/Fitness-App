@@ -528,13 +528,13 @@ canvas {
   </tr>
   <tr>
     <td>Recommended Exercise</td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->mon;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->tue;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->wed;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->thur;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->fri;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->sat;} ?></td>
-    <td><?php if($result3==null){echo 0;}else{echo $result3->sun;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->mon;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->tue;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->wed;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->thur;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->fri;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->sat;} ?></td>
+    <td><?php if($result3==null){echo "none";}else{echo $result3->sun;} ?></td>
   </tr>
 </table>
 
