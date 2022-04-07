@@ -1027,7 +1027,7 @@ if (isset($_GET['adminGetAllInstructors']) && $_GET['adminGetAllInstructors']!="
     }
 
     if($fname!=0&&$lname!=0&&$email!=0&&$username!=0&&$role!=0&&$ids!=0){
-        responseAllInstructos($fname, $lname, $email,$username,$role,$ids);
+        responseAllInstructors($fname, $lname, $email,$username,$role,$ids);
         mysqli_close($con);
     }
     else{
@@ -1550,7 +1550,7 @@ isset($_POST['adminChangeIEmail']) && $_POST['adminChangeIEmail']!="") {
         echo $json_response;
     }
 
-    function responseAllInstructos($fname, $lname, $email,$username,$role,$ids){
+    function responseAllInstructors($fname, $lname, $email,$username,$role,$ids){
         $response['fname'] = $fname;
         $response['lname']= $lname;
         $response['email']= $email;
