@@ -1220,17 +1220,17 @@ if (isset($_POST['subscribeIID']) && $_POST['subscribeIID']!="" &&isset($_POST['
     }
 }
 
-if (isset($_POST['custIID']) && $_POST['custIID']!="" &&isset($_POST['custId']) && $_POST['custId']!=""&&isset($_POST['chatMsg']) && $_POST['chatMsg']!="" ){
+if (isset($_POST['reviewscustIID']) && $_POST['reviewscustIID']!="" &&isset($_POST['reviewscustId']) && $_POST['reviewscustId']!=""&&isset($_POST['reviewsChatMsg']) && $_POST['reviewsChatMsg']!="" ){
     include ('db.php');
-    $IID = $_POST['custIID'];
-    $UID = $_POST['custId'];
-    $MSG = $_POST['chatMsg'];
+    $IID = $_POST['reviewscustIID'];
+    $UID = $_POST['reviewscustId'];
+    $MSG = $_POST['reviewsChatMsg'];
 
-    $stmt = $con->prepare("INSERT INTO Reviews (IID, UID, review) VALUES (?,?,?)");
+    $stmt = $con->prepare("INSERT INTO Reviews (IID, UID, review) VALUES (?,?,?);");
 
     $stmt->bind_param("iis",$IID, $UID, $MSG);
     $stmt->execute();
-    echo 1;
+    echo "monkey";
 }
 
 if (isset($_POST['instrMyAccountFname']) && $_POST['instrMyAccountFname']!="" &&

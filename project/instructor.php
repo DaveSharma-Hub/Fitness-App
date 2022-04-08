@@ -174,6 +174,96 @@ button{
 .checked {
   color: orange;
 }
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  padding-top: 60px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5px auto; /* 15% from the top and centered */
+  border: 1px solid #888;
+  width: 100%; /* Could be more or less, depending on screen size */
+  height:50vh;
+}
+
+/* The Close Button */
+.close {
+  /* Position it in the top right corner outside of the modal */
+  position: absolute;
+  right: 25px;
+  top: 0;
+  color: #000;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+/* Close button on hover */
+.close:hover,
+.close:focus {
+  color: red;
+  cursor: pointer;
+}
+
+/* Add Zoom Animation */
+.animate {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+  from {-webkit-transform: scale(0)}
+  to {-webkit-transform: scale(1)}
+}
+
+@keyframes animatezoom {
+  from {transform: scale(0)}
+  to {transform: scale(1)}
+}
+.Ireport{
+    background-color:rgb(0,0,0,0.1);
+    border-radius:10px;
+    width:48%;
+    height:100%;
+    float:right;
+    justify-items:center;
+}
+
+.reviews{
+  overflow-y:auto;
+  height:75%;
+  background-color:rgb(0,0,0,0.1);
+  border-radius:10px;
+  width:80%;
+  margin:0 auto;
+  text-align:left;
+}
+input[type=text]{
+  padding:10px;
+  border-radius:5px;
+  width:50%;
+  border:transparent;
+}
+
+#sub{
+  background-color:red;
+}
+#rev{
+  background-color:orange;
+}
+#subRev{
+  background-color:green;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -229,9 +319,39 @@ button{
                 else{
                     echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
                 }
-                echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit'>Subscribe</button></p><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
+                echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit' id='sub'>Subscribe</button></p><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
                 <input type='hidden' id='UID' name='subscribeUID' value=".$result->userID."></form>";
-                echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i]."></form>";
+                // echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i]."></form>";
+                echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($result2->ids).">";
+
+                echo "<button onclick=\"document.getElementById('id".$i."').style.display='block'\" id='rev'>Review</button>
+                  <!-- The Modal -->
+                  <div id='id".$i."' class='modal'>
+                  <span onclick=\"document.getElementById('id".$i."').style.display='none'\"
+                  class=\"close\" title=\"Close Modal\">&times;</span>
+                  <div class='insideI' style='background-color:white;width:50%;margin:0 auto;'>
+                      <h1>Reviews for Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."</h1>
+                      <form class='modal-content animate' id='sendReview".$i."'>";
+                      $url = "http://localhost:5000/api.php?getReviewsIID=".$result2->ids[$i];
+	
+                      $client = curl_init($url);
+                      curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+                      $response = curl_exec($client);
+                      $resultR = json_decode($response);
+                      echo "<div class='reviews'>";
+                    for($j=0;$j<count($resultR->review);$j++){
+                        echo "<p> <img src='https://www.shareicon.net/data/512x512/2017/01/06/868320_people_512x512.png' style='width:30px;height:30px;'>".$resultR->review[$j]."</p>";
+                    }
+                    echo"</div>";
+                  echo "<input type='hidden' id='custId' name='reviewscustIID' value=".$result2->ids[$i]."> 
+                  <input type='hidden' id='custId' name='reviewscustId' value=".$id."> 
+                  <label for='uname'><b>Review</b></label>
+                    <input type='text' placeholder='Review Instructor' name='reviewsChatMsg' required><br><br>
+                    <button type='submit' id='subRev'>Review</button>
+                    <button type='button' onclick=\"document.getElementById('id".$i."').style.display='none'\" class='cancelbtn'>Cancel</button>
+                </form>
+                  </div>
+                </div>";
             }
         ?>
     </div>
@@ -371,6 +491,36 @@ for (let i = 0; i < id; i++){
 });
  e.preventDefault();
 });
+}
+
+var id = document.getElementById("totalNum").value;
+
+
+// $("#sendReview").on("submit", function(e) {
+//  var dataString = $(this).serialize();
+//   console.log(dataString);
+//   $.post('http://localhost:5000/api.php', dataString, function(response) {
+//     // Log the response to the console
+//     document.getElementById("textField").value = "";
+//     // console.log("Response: "+response);
+//     console.log(response);
+//     //location.reload();
+//  });
+//  e.preventDefault();
+// });
+for (let i = 0; i < id; i++){
+  var str = "#sendReview".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+    $.post('http://localhost:5000/api.php', dataString, function(response) {
+      // Log the response to the console
+      // console.log("Response: "+response);
+      location.reload();
+  });
+  e.preventDefault();
+  });
 }
 
 

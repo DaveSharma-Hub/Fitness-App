@@ -57,7 +57,6 @@ body{
   color: white;
 }
 
-
 #mySidenav a {
   padding-top:100px;
   position: absolute;
@@ -259,10 +258,9 @@ button {
 </div>
 <div class="message">
     <form id="sendReview" method = "post">
-
-    <input type="hidden" id="custIId" name="custIID" value=<?php echo $IID?>> 
-    <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
-        <input type="text" id="textField" name="chatMsg" required>
+    <input type="hidden" id="reviewscustIID" name="reviewscustIID" value=<?php echo $IID?>> 
+    <input type="hidden" id="reviewscustId" name="reviewscustId" value=<?php echo $result->userID?>> 
+        <input type="text" id="textField" name="reviewsChatMsg" required>
         <button type="submit">Message</button>
     </form>
 </div>
@@ -331,15 +329,16 @@ $("#sendReview").on("submit", function(e) {
     // Log the response to the console
     document.getElementById("textField").value = "";
     // console.log("Response: "+response);
-    location.reload();
+    console.log(response);
+    //location.reload();
  });
  e.preventDefault();
 });
 
 
-// function start(){
-//   startTime();
-//   getData();
-// }
+function start(){
+  startTime();
+
+}
 </script>
 </html> 
