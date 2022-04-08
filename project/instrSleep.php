@@ -17,6 +17,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 body{
     background-color:white;
@@ -285,20 +287,36 @@ button {
         <h4>(Users that have subscribed to you)</h4>
 
         <?php
-            for($i=0;$i<3;$i++){
-                echo "<button onclick=\"document.getElementById('id01').style.display='block'\">User</button>
-                        <!-- The Modal -->
-                        <div id='id01' class='modal'>
-                        <span onclick=\"document.getElementById('id01').style.display='none'\"
-                        class=\"close\" title=\"Close Modal\" >&times;</span>
-                        <!-- Modal Content -->
-                        <form class='modal-content animate'>
-                            Recommended Sleep Start Time:<input type='text' placeholder='ex: 7:00pm' name='psw' required><br>
-                            Recommended Sleep End Time:<input type='text' placeholder='ex: 5:00am' name='psw' required><br>
-                            Recommended Sleep Hours:<input type='text' placeholder='ex: 8' name='psw' required><br>
-                        </form>
-                        </div>";
-                }
+          $url = "http://localhost:5000/api.php?getMySubscriberIID=".$id;
+
+          $client = curl_init($url);
+          curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+          $response = curl_exec($client);
+          $result2 = json_decode($response);
+
+          echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($result2->UID).">";
+
+          for($i=0;$i<count($result2->UID);$i++){
+            echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
+                    <!-- The Modal -->
+                    <div id='".$i."' class='modal'>
+                    <span onclick=\"document.getElementById('id01').style.display='none'\"
+                    class=\"close\" title=\"Close Modal\" >&times;</span>
+                    <!-- Modal Content -->
+                  <form id='updateSleepPlan".$i."'method='post' class='modal-content animate'>
+                    <input type='hidden' id='sleepPlanUID' name='sleepPlanUID' value=".$result2->UID[$i].">
+                    <input type='hidden' id='sleepPlanIID' name='sleepPlanIID' value=".$result->IID.">
+                    <h1>Recommended Sleep Start Time</h1>
+                    Sleep Time:<input type='text' placeholder='ex: 7:00pm' name='sleepTime' required><br>
+                    <h1>Recommended Sleep End Time</h1>
+                    Wake-up Time:<input type='text' placeholder='ex: 5:00am'name='wakeupTime' required><br>
+                    <h1>Recommended Sleep Hours</h1>
+                    Sleep Hours:<input type='text' placeholder='ex: 8' name='sleepHours' required><br>
+                    <button type='submit'>Add Sleep Plan</button>
+                    <button onclick=\"document.getElementById('".$i."').style.display='none'\" type='buttton'>Cancel</button>
+                  </form>
+                </div>";
+            }
         ?>
     </div>
 </div>
@@ -353,6 +371,23 @@ function startTime() {
 function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
+}
+
+var id = document.getElementById("totalNum").value;
+
+for (let i = 0; i < id; i++){
+  var str = "#updateSleepPlan".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
+ var dataString = $(this).serialize();
+  console.log(dataString);
+    $.post('http://localhost:5000/api.php', dataString, function(response) {
+      // Log the response to the console
+      // console.log("Response: "+response);
+      location.reload();
+  });
+  e.preventDefault();
+  });
 }
 
 </script>

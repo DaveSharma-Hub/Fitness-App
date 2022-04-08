@@ -148,28 +148,27 @@ if (isset($_GET['sleepScheduleUID']) && $_GET['sleepScheduleUID']!="") {
     }
 }
 if (isset($_GET['sleepRecommendedUID']) && $_GET['sleepRecommendedUID']!="") {
-	include('db.php');
-	$order_id = $_GET['sleepRecommendedUID'];
+    include('db.php');
+    $order_id = $_GET['sleepRecommendedUID'];
     //echo $order_id;
-    $stmt = $con->prepare("SELECT * FROM sleep_schedule,sleep_tracker WHERE sleep_tracker.UID=? AND
-    sleep_tracker.SID=sleep_schedule.SID");
+    $stmt = $con->prepare("SELECT * FROM sleepPlan WHERE UID=?");
     $stmt->bind_param("i",$order_id);
-	//$result = mysqli_query($con,);
-	
+    //$result = mysqli_query($con,);
+
     $stmt->execute();
     $stmt_result = $stmt->get_result();
     $max = 0;
     $time = 0;
-    
+
     if($stmt_result->num_rows>0){
-       
+
         while($row = $stmt_result->fetch_array()){
             // $amount = $row['Fname'];
             // $response_code = $row['Lname'];
             // $email = $row['Email'];
             // $username = $row['Username'];
             // $response_desc = $row['Age'];
-            $time = $row['sleep_time'];
+            $time = $row['recHours'];
         }
     }
     if($time!=0){
@@ -177,7 +176,7 @@ if (isset($_GET['sleepRecommendedUID']) && $_GET['sleepRecommendedUID']!="") {
         mysqli_close($con);
     }
     else{
-	response(NULL, NULL, 200,"No Record Found");
+    response(NULL, NULL, 200,"No Record Found");
     }
 }
 
@@ -740,7 +739,7 @@ if (isset($_GET['getMyNotes']) && $_GET['getMyNotes']!="" ) {
 	include('db.php');
 	$username = $_GET['getMyNotes'];
     //echo $order_id;
-    $stmt = $con->prepare("SELECT * FROM SleepNotes WHERE UID=?;");
+    $stmt = $con->prepare("SELECT * FROM sleepNotes WHERE UID=?;");
     $stmt->bind_param("i",$username);
 	//$result = mysqli_query($con,);
 	
@@ -1064,6 +1063,37 @@ if (isset($_GET['instructorNumUsers']) && $_GET['instructorNumUsers']!="") {
     }
 }
 
+if (isset($_GET['getMySleepPlan']) && $_GET['getMySleepPlan']!="") {
+	include('db.php');
+	$UID = $_GET['getMySleepPlan'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM sleepPlan WHERE UID=?");
+    $stmt->bind_param("i",$UID);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+    $recSleepTime = "";
+    $recWakeupTime = "";
+    $recHours = "";
+
+    if($stmt_result->num_rows>0){
+       
+        while($row = $stmt_result->fetch_array()){
+            $recSleepTime = $row['recSleepTime'];
+            $recWakeupTime = $row['recWakeupTime'];
+            $recHours = $row['recHours'];
+        }
+    }
+    if($recSleepTime!=""&&$recWakeupTime!=""&&$recHours!=""){
+        responseSleepPlan($recSleepTime,$recWakeupTime,$recHours);
+        mysqli_close($con);
+    }
+    else{
+	response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
 
 
 
@@ -1205,10 +1235,10 @@ if (isset($_POST['textNotes']) && $_POST['textNotes']!=""){
     $date = new DateTime();
     $today = $date->format('Y-m-d');
     // //echo $order_id;
-    $stmt = $con->prepare("INSERT INTO SleepNotes (UID, TodayDate, Notes) VALUES (?,?,?) ON DUPLICATE KEY UPDATE Notes = ?");
+    $stmt = $con->prepare("INSERT INTO sleepNotes (UID, TodayDate, Notes) VALUES (?,?,?)");
     $aid = 1;
     // //$result = mysqli_query($con,);
-	 $stmt->bind_param("isss",$Id,$today,$notes,$notes);
+	 $stmt->bind_param("iss",$Id,$today,$notes);
      $stmt->execute();
      echo 1;
 }
@@ -1233,23 +1263,12 @@ if (isset($_POST['subscribeIID']) && $_POST['subscribeIID']!="" &&isset($_POST['
     $IID = $_POST['subscribeIID'];
     $UID = $_POST['subscribeUID'];
 
-    // $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?) WHERE NOT IN (SELECT * FROM subscribe WHERE IID = ? AND UID = ?)");
-    $stmt = $con->prepare("SELECT * FROM subscribe WHERE IID = ? AND UID = ?");
+    $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?) ON DUPLICATE KEY UPDATE IID = ?");
+    // $stmt = $con->prepare("SELECT * FROM subscribe WHERE IID = ? AND UID = ?");
 
-    $stmt->bind_param("ii",$IID, $UID);
+    $stmt->bind_param("iii",$IID, $UID, $IID);
     $stmt->execute();
-
-    $stmt_result = $stmt->get_result();
-
-    if($stmt_result->num_rows>0){
-        echo 1;
-    }
-    else {
-        $stmt = $con->prepare("INSERT INTO subscribe (IID, UID) VALUES (?,?)");
-        $stmt->bind_param("ii",$IID, $UID);
-        $stmt->execute();
-        echo 1;
-    }
+    echo 1;
 }
 
 if (isset($_POST['reviewscustIID']) && $_POST['reviewscustIID']!="" &&isset($_POST['reviewscustId']) && $_POST['reviewscustId']!=""&&isset($_POST['reviewsChatMsg']) && $_POST['reviewsChatMsg']!="" ){
@@ -1332,9 +1351,10 @@ isset($_POST['exercisePlanSunday']) && $_POST['exercisePlanSunday']!="") {
     $saturday = $_POST['exercisePlanSaturday'];
     $sunday = $_POST['exercisePlanSunday'];
 
-    $stmt = $con->prepare("INSERT INTO exercisePlan (monday, tuesday, wednesday, thursday, friday, saturday, sunday, UID, IID) VALUES (?,?,?,?,?,?,?,?,?) ");
+    $stmt = $con->prepare("INSERT INTO exercisePlan (monday, tuesday, wednesday, thursday, friday, saturday, sunday, UID, IID) VALUES (?,?,?,?,?,?,?,?,?) 
+    ON DUPLICATE KEY UPDATE monday = ?, tuesday = ?, wednesday = ?, thursday = ?, friday = ?, saturday = ?, sunday = ? ");
 
-    $stmt->bind_param("sssssssii",$monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $UID, $IID);
+    $stmt->bind_param("sssssssiisssssss",$monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $UID, $IID, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday);
     $stmt->execute();
     echo 1;
 }
@@ -1377,6 +1397,24 @@ isset($_POST['adminChangeIEmail']) && $_POST['adminChangeIEmail']!="") {
     $stmt = $con->prepare("UPDATE Instructor SET username=?,FName=?,LName=?,role=?,Email=? Where IID=? ");
     $stmt->bind_param("sssssi",$uname,$fname, $lname, $role, $email, $id);
     
+    $stmt->execute();
+    echo 1;
+}
+
+if (isset($_POST['sleepTime']) && $_POST['sleepTime']!="" &&
+isset($_POST['wakeupTime']) && $_POST['wakeupTime']!="" &&
+isset($_POST['sleepHours']) && $_POST['sleepHours']!="") {
+    //echo "Testing";
+    include('db.php');
+    $UID = $_POST['sleepPlanUID'];
+    $IID = $_POST['sleepPlanIID'];
+    $sleepTime = $_POST['sleepTime'];
+    $wakeupTime = $_POST['wakeupTime'];
+    $sleepHours = $_POST['sleepHours'];
+
+    $stmt = $con->prepare("INSERT INTO sleepPlan (recSleepTime, recWakeupTime, recHours, UID, IID) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE recSleepTime = ?, recWakeupTime = ?, recHours = ?");
+
+    $stmt->bind_param("ssiiissi",$sleepTime, $wakeupTime, $sleepHours, $UID, $IID, $sleepTime, $wakeupTime, $sleepHours);
     $stmt->execute();
     echo 1;
 }
@@ -1595,6 +1633,14 @@ isset($_POST['adminChangeIEmail']) && $_POST['adminChangeIEmail']!="") {
 
     function responseInstructorUserSub($count){
         $response['count'] = $count;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseSleepPlan($recSleepTime,$recWakeupTime,$recHours){
+        $response['recSleepTime'] = $recSleepTime;
+        $response['recWakeupTime']= $recWakeupTime;
+        $response['recHours']= $recHours;
         $json_response = json_encode($response);
         echo $json_response;
     }
