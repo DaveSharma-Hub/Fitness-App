@@ -291,10 +291,10 @@ if (isset($_GET['dietCalID']) && $_GET['dietCalID']!="") {
     $test =0;
     if($stmt_result->num_rows>0){
         while($row = $stmt_result->fetch_array()){
-            $test = $row['dateDiet'];
-            //if(strtotime($row['dateDiet']) == strtotime($today)){ 
+            //$test = $row['dateDiet'];
+            if(strtotime($row['dateDiet']) == strtotime($today)){ 
                 $cal += $row['calories_intake'];
-            //}
+            }
         }
     }
     if($cal>=0){
@@ -1035,6 +1035,38 @@ if (isset($_GET['adminGetAllInstructors']) && $_GET['adminGetAllInstructors']!="
     }
 }
 
+
+if (isset($_GET['instructorNumUsers']) && $_GET['instructorNumUsers']!="") {
+	include('db.php');
+	$order_id = $_GET['instructorNumUsers'];
+    //echo $order_id;
+    $stmt = $con->prepare("SELECT * FROM subscribe WHERE IID=?");
+    $stmt->bind_param("i",$order_id);
+	//$result = mysqli_query($con,);
+	
+    $stmt->execute();
+    $stmt_result = $stmt->get_result();
+
+    $count=0;
+    if($stmt_result->num_rows>0){
+
+        while($row = $stmt_result->fetch_array()){
+            $count++;
+        }
+    }
+
+    if(1){
+        responseInstructorUserSub($count);
+        mysqli_close($con);
+    }
+    else{
+	 response(NULL, NULL, 200,"No Record Found");
+    }
+}
+
+
+
+
 if (isset($_POST['myAccountFname']) && $_POST['myAccountFname']!="" &&
 isset($_POST['myAccountLname']) && $_POST['myAccountLname']!="" &&
 isset($_POST['myAccountEmail']) && $_POST['myAccountEmail']!="" &&
@@ -1557,6 +1589,12 @@ isset($_POST['adminChangeIEmail']) && $_POST['adminChangeIEmail']!="") {
         $response['username']= $username;
         $response['role']= $role;
         $response['ids'] = $ids;
+        $json_response = json_encode($response);
+        echo $json_response;
+    }
+
+    function responseInstructorUserSub($count){
+        $response['count'] = $count;
         $json_response = json_encode($response);
         echo $json_response;
     }
