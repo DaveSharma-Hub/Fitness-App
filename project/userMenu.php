@@ -132,6 +132,34 @@ canvas {
     width: 100%;
     float:right;
 }
+.facts{
+  margin:0 auto;
+}
+.Efacts{
+  /* margin:0 auto; */
+  width:30%;
+  border-radius:10px;
+  background-color:rgb(0,0,0,0.1);
+  padding:10px;
+  float:left;
+}
+.Dfacts{
+   margin-left:40px;
+   margin-right:10px;
+  width:30%;
+  border-radius:10px;
+  background-color:rgb(0,0,0,0.1);
+  padding:10px;
+  float:left;
+}
+.Sfacts{
+   margin-left:10px;
+  width:30%;
+  border-radius:10px;
+  background-color:rgb(0,0,0,0.1);
+  padding:10px;
+  float:right;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -156,10 +184,57 @@ canvas {
   <a href="instructor.php" id="contact">Instructor</a>
 </div>
 
-<div style="width:90%;margin:0 auto;">
+<div class="facts">
+<div class="Efacts">
+  <h1>Exercise Facts</h1>
+  <p1> 1. Music improves workout performance
+Listening to music while exercising can improve work out performance by 15%.</p1>
+<br><p1> 2. Exercising improves brain performance
+Cardiovascular exercise helps create new brain cells. This enhances brainpower and brain activity.</p1>
+<br><p1>3. Working out sharpens your memory
+Exercising increases the production of cells that are responsible for learning and memory</p1>
+<br><p1>4. Exercise prevents signs of ageing
+If you exercise 3 times a week for 45 minutes, you can help prevent signs of ageing.<p1>
+<br><p1>5. You get sick less often
+Exercising regularly helps boost your immune system. This means you’ll get sick less often than people who don’t exercise.</p1>
+<br><p1>6. A pound of muscle burns three times more calories than a pound of fat
+Having more muscle than fat means you can consume more calories.</p1>
+</div>
+<div class="Dfacts">
+  <h1>Diet Facts</h1>
+  <p1> 1. Music improves workout performance
+Listening to music while exercising can improve work out performance by 15%.</p1>
+<br><p1> 2. Exercising improves brain performance
+Cardiovascular exercise helps create new brain cells. This enhances brainpower and brain activity.</p1>
+<br><p1>3. Working out sharpens your memory
+Exercising increases the production of cells that are responsible for learning and memory</p1>
+<br><p1>4. Exercise prevents signs of ageing
+If you exercise 3 times a week for 45 minutes, you can help prevent signs of ageing.<p1>
+<br><p1>5. You get sick less often
+Exercising regularly helps boost your immune system. This means you’ll get sick less often than people who don’t exercise.</p1>
+<br><p1>6. A pound of muscle burns three times more calories than a pound of fat
+Having more muscle than fat means you can consume more calories.</p1>
+</div>
+<div class="Sfacts">
+  <h1>Sleep Facts</h1>
+  <p1> 1. Sleep boosts immunity
+During the flu season, it’s recommended to sleep seven to eight hours sleep a night to help keep your hardworking immune system in tip top shape.</p1>
+<br><p1> 2. A new bed can increase the amount of sleep you get
+According to The Sleep Council, you can get an extra 42 minutes sleep when you trade in your old bed for a new one.</p1>
+<br><p1>3. Altitude affects sleep
+When you're at altitude (approx. 13,200 ft plus), there is less oxygen which makes it much harder to go to sleep.</p1>
+<br><p1>4. It should take 10 – 15 minutes to fall asleep
+This is the ideal amount of time it takes to fall asleep. If you find yourself dropping off in 5 minutes or under, the likelihood is your suffering from sleep deprivation.<p1>
+<br><p1>5. Sleep is different for men and women
+According to the National Sleep Foundation, male and female circadian rhythms are slightly different. On average, men have a longer circadian rhythm by six minutes. Women are more likely to have a shorter cycle, meaning they are more prone to waking up earlier. </p1>
+<!-- <br><p1>6. A pound of muscle burns three times more calories than a pound of fat
+Having more muscle than fat means you can consume more calories.</p1> -->
+</div>
+</div>
+<!-- <div style="width:90%;margin:0 auto;">
     <canvas id="myChart" style="max-width:600px;left:0"></canvas>
     <canvas id="myChart2" style="max-width:600px;left:0"></canvas>
-</div>
+</div> -->
 
 </body>
 <script>

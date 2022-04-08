@@ -130,6 +130,8 @@ body{
     width:48%;
     float:left;
     text-align:center;
+    overflow-y:auto;
+    height:50vh;
 }
 .subscribe a{
     /* float:right; */
@@ -157,6 +159,8 @@ body{
     float:right;
     width:48%;
     text-align:center;
+    overflow-y:auto;
+    height:50vh;
 }
 button{
     /* float:right; */
@@ -298,7 +302,7 @@ input[type=text]{
           curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
           $response = curl_exec($client);
           $result2 = json_decode($response);
-          echo "<input type='hidden' id='custId' name='custId' value=".count($result2->ids).">"; 
+          echo "<hr><input type='hidden' id='custId' name='custId' value=".count($result2->ids).">"; 
             for($i=0;$i<count($result2->ids);$i++){
                 echo "<p>";
                 if($result2->star[$i]==0){
@@ -319,7 +323,7 @@ input[type=text]{
                 else{
                     echo "	&#11088;&#11088;&#11088;&#11088;&#9733;	";
                 }
-                echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit' id='sub'>Subscribe</button></p><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
+                echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp</p><button style='margin-bottom:3px;'type ='Submit' id='sub'>Subscribe</button><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
                 <input type='hidden' id='UID' name='subscribeUID' value=".$result->userID."></form>";
                 // echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i]."></form>";
                 echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($result2->ids).">";

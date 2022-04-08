@@ -322,7 +322,7 @@ table{
 </div>
 
 <div style="position:relative;">
-    <canvas id="myChart" style="max-width:300px;left:0"></canvas>
+    <canvas id="myChart" style="max-width:300px;left:0;margin-top:-100px"></canvas>
     <!-- <canvas id="myChart2" style="max-width:500px;left:0"></canvas> -->
     <table>
       <?php 

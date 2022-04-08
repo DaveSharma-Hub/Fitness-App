@@ -18,9 +18,14 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 body{
     background-color:white;
+    font-family: 'Quicksand', cursive;
+
 }
 .topnav {
   margin-left:7%;
@@ -117,9 +122,20 @@ body{
     font-size: 2em;
     color: #666;
 }
+
+.insReview{
+  width:50%;
+  background-color:rgb(0,0,0,0.1);
+  border-radius:10px;
+  height:50vh;  
+  overflow-y:auto;
+  float:right;
+}
 </style>
 </head>
-<body onload="startTime()">
+<body onload="start()">
+<input type="hidden" id="custId" name="custId" value=<?php echo $id?>> 
+
 <div class="topnav">
   <a href="instrLogin.php">Logout</a>
   <a href="instructorMyAccount.php">My Account</a>
@@ -140,14 +156,35 @@ body{
   <a href="instrDiet.php" id="projects">Update Diet</a>
   <a href="instrMsg.php" id="contact">Messages</a>
 </div>
-
+<!-- 
 <div style="position:relative;">
     <canvas id="myChart" style="max-width:400px;left:0"></canvas>
     <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
+</div> -->
+<div class="outer">
+<div style="float:left;position:relative;">
+    <canvas id="myChart" style="width:600px;margin-top:20px;"></canvas>
 </div>
-
+<div class="insReview">
+  <h1>Your Reviews</h1>
+<?php
+    $url = "http://localhost:5000/api.php?getReviewsIID=".$id;
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultR = json_decode($response);
+    echo "<div class='reviews'>";
+    for($j=0;$j<count($resultR->review);$j++){
+      echo "<p> <img src='https://www.shareicon.net/data/512x512/2017/01/06/868320_people_512x512.png' style='width:30px;height:30px;'>".$resultR->review[$j]."</p>";
+    }
+    echo"</div>";
+?>
+</div>
+  </div>
 </body>
 <script>
+  var id = document.getElementById("custId").value;
+
 var today = new Date();
 var hourNow = today.getHours();
 var greeting;
@@ -196,6 +233,57 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
+var xValuesU = ["Total Subscribed Of Users"];
+  var barColorsU = ["rgba(54, 162, 235, 0.2)"];
+function barChart(){
+  
+  
+  //   const xmlhttp = new XMLHttpRequest();
+  //   xmlhttp.onload = function() {
+  //     json=this.responseText;
+  //   }
+  // xmlhttp.open("GET", "http://localhost:5000/api.php?sleepUID="+id);
+  // xmlhttp.send();
+    $.ajax({
+          url: "http://localhost:5000/api.php?instructorNumUsers="+id,
+          type: 'GET',
+          dataType: 'json', // added data type
+          success: function(res) {
+              console.log(res);
+              //json = res;
+              //alert(res);
+              var data = [res].map(function(e) {
+                    if(res==null){return [0];}
+                    else{return e.count;}
+              });;
+              // var arr = [4, 6, 6, 5, 5.5, 8, 9];
+              //console.log(arr);
+               console.log(data);
+              new Chart("myChart", {
+                type: "bar",
+                data: {
+                  labels: xValuesU,
+                  datasets: [{
+                    backgroundColor: barColorsU,
+                    borderColor: ['rgb(54, 162, 235)'],
+                    data: data
+                  }]
+                },
+                options: {
+                  legend: {display: false},
+                  title: {
+                    display: true,
+                    text: "Number of Users Subscribed to You"
+                  }
+                }
+              }); 
+          }
+      });
+}
 
+function start(){
+  barChart();
+  startTime();
+}
 </script>
 </html> 
