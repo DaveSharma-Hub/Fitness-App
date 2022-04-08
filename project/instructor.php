@@ -231,7 +231,8 @@ button{
                 }
                 echo "<form id='subscribeInst".$i."' method='post'><p>Instructor ".$result2->fname[$i]." ".$result2->lname[$i]."&nbsp&nbsp&nbsp&nbsp&nbsp<button type ='Submit'>Subscribe</button></p><input type='hidden' id='IID' name='subscribeIID' value=".$result2->ids[$i].">
                 <input type='hidden' id='UID' name='subscribeUID' value=".$result->userID."></form>";
-                echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='IID' name='reviewsIID' value=".$result2->ids[$i]."></form>";
+                echo "<form action = 'reviews.php' id='reviewsInst' method='post'><button type ='Submit'>Reviews</button></p><input type='hidden' id='reviewsIID' name='reviewsIID' value=".$result2->ids[$i].">
+                <input type='hidden' id='iFname' name='iFname' value=".$result2->fname[$i]."><input type='hidden' id='iLname' name='iLname' value=".$result2->lname[$i]."></form>";
             }
         ?>
     </div>

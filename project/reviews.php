@@ -7,9 +7,24 @@
     // }
     $id = $_SESSION['id'];
     $IID=0;
-    if(isset($_POST['reviewsIID'])&&$_POST['reviewsIID']!=""){
+    $iFname=0;
+    $iLname=0;
+    if(isset($_POST['reviewsIID'])&&$_POST['reviewsIID']!="" &&isset($_POST['iFname'])&&$_POST['iFname']!=""&&
+    isset($_POST['iLname'])&&$_POST['iLname']!=""){
       $IID = $_POST['reviewsIID'];
+      $iFname = $_POST['iFname'];
+      $iLname = $_POST['iLname'];
     }
+    // if(isset($_POST['reviewsIID'])&&$_POST['reviewsIID']!=""&&
+    // isset($_POST['iFname'])&&$_POST['iFname']!=""&&
+    // isset($_POST['iLname'])&&$_POST['iLname']!=""){
+    //   $IID = $_POST['reviewsIID'];
+    //   $ifname = $_POST['iFname'];
+    //   $ilname = $_POST['iLname'];
+    // }
+    // if(isset($_POST['reviewsIID'])&&$_POST['reviewsIID']!=""){
+    //   $IID = $_POST['reviewsIID'];
+    // }
     $url = "http://localhost:5000/api.php?userID=".$id;
     $client = curl_init($url);
     curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
@@ -128,7 +143,7 @@ body{
 .chat{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:90%;
+    width:60%;
     margin:0 auto;
     height:50vh;
     overflow-y:auto;
@@ -177,7 +192,7 @@ body{
 .message{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:90%;
+    width:60%;
     margin:0 auto;
     height:10vh;
 }
@@ -190,6 +205,17 @@ body{
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 10px;
+  font-family:'Quicksand',cursive;
+  font-size:1.5rem;
+  font-weight:bold;
+}
+
+.reviews{
+  background-color:rgb(0,0,0,0.1);
+  border-radius:10px;
+  width:60%;
+  margin:0 auto;
+  height:10vh;
   font-family:'Quicksand',cursive;
   font-size:1.5rem;
   font-weight:bold;
@@ -209,19 +235,22 @@ button {
 <input type="hidden" id="id" name="id" value=<?php echo $result->userID?>> 
 
 <input type="hidden" id="IID" name="IID" value=<?php echo $IID?>> 
+<input type="hidden" id="ifname" name="ifname" value=<?php echo $iFname?>> 
+<input type="hidden" id="ilname" name="ilname" value=<?php echo $iLname?>> 
+
 
 <body onload="start()">
 <div class="topnav">
-  <a href="#">Logout</a>
-  <a href="#news">My Account</a>
-  <a class="active" href="#home">Home</a>
+<a href="login.php">Logout</a>
+  <a href="myAccount.php">My Account</a>
+  <a class="active" href="userMenu.php">Home</a>
 </div>
 <main class="container" id="mainContainer">
   <div id="col-1"></div>
   <div id="col-2"><div id="icon">
 </main>
 <div class="welcome">
-  <h3> <?php echo $result->Fname." ".$result->Lname ?></h3>
+<h3> Reviews for Instructor <?php echo $iFname." ".$iLname ?></h3>
 
 </div>
 <div id="txt"></div>
@@ -235,6 +264,7 @@ button {
 
 <div class="chat" id="chat">
     <?php
+    // echo $IID;
     $url = "http://localhost:5000/api.php?getReviewsIID=".$IID;
 	
     $client = curl_init($url);
@@ -243,7 +273,7 @@ button {
     $result3 = json_decode($response);
 
     for($i=0;$i<count($result3->review);$i++){
-        echo "<p>".$result3->review[$i]."</p>";
+        echo "<div class = 'reviews'><p>".$result3->review[$i]."</p></div>";
     }
    
     ?>
@@ -263,7 +293,7 @@ button {
     <input type="hidden" id="custIId" name="custIID" value=<?php echo $IID?>> 
     <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
         <input type="text" id="textField" name="chatMsg" required>
-        <button type="submit">Message</button>
+        <button type="submit">Send Review</button>
     </form>
 </div>
 
@@ -337,9 +367,9 @@ $("#sendReview").on("submit", function(e) {
 });
 
 
-// function start(){
-//   startTime();
-//   getData();
-// }
+function start(){
+  startTime();
+  getData();
+}
 </script>
 </html> 
