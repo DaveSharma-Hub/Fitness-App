@@ -292,6 +292,7 @@ button {
              curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
              $response = curl_exec($client);
              $result2 = json_decode($response);
+             echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($result2->UID).">";
              for($i=0;$i<count($result2->UID);$i++){
               echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
                         <!-- The Modal -->
@@ -367,16 +368,23 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
-$("#updateRecipes").on("submit", function(e) {
+var id = document.getElementById("totalNum").value;
+
+var id = document.getElementById("totalNum").value;
+
+for (let i = 0; i < id; i++){
+  var str = "#updateRecipes".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
  var dataString = $(this).serialize();
   console.log(dataString);
-  $.post('http://localhost:5000/api.php', dataString, function(response) {
-    // Log the response to the console
-    //document.getElementById("textField").value = "";
-     console.log("Response: "+response);
-    //location.reload();
-});
- e.preventDefault();
-});
+    $.post('http://localhost:5000/api.php', dataString, function(response) {
+      // Log the response to the console
+      // console.log("Response: "+response);
+      location.reload();
+  });
+  e.preventDefault();
+  });
+}
 </script>
 </html> 
