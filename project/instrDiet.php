@@ -300,7 +300,7 @@ button {
                         <span onclick=\"document.getElementById('id01').style.display='none'\"
                         class=\"close\" title=\"Close Modal\" >&times;</span>
                         <!-- Modal Content -->
-                        <form id='updateRecipes' method='post' class='modal-content animate'>
+                        <form id='updateRecipes".$i."' method='post' class='modal-content animate'>
                           <input type='hidden' id='UID' name='recipeUID' value=".$result2->UID[$i].">
                           <input type='hidden' id='IID' name='recipeIID' value=".$result->IID.">
                             <h1>Recipe:</h1>
