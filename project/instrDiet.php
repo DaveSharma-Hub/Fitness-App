@@ -17,6 +17,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 body{
     background-color:white;
@@ -284,43 +286,29 @@ button {
         <h4>(Users that have subscribed to you)</h4>
 
         <?php
-            for($i=0;$i<3;$i++){
-                echo "<button onclick=\"document.getElementById('id01').style.display='block'\">User</button>
+             $url = "http://localhost:5000/api.php?getMySubscriberIID=".$id;
+
+             $client = curl_init($url);
+             curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+             $response = curl_exec($client);
+             $result2 = json_decode($response);
+             for($i=0;$i<count($result2->UID);$i++){
+              echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
                         <!-- The Modal -->
-                        <div id='id01' class='modal'>
+                        <div id='".$i."' class='modal'>
                         <span onclick=\"document.getElementById('id01').style.display='none'\"
                         class=\"close\" title=\"Close Modal\" >&times;</span>
                         <!-- Modal Content -->
-                        <form class='modal-content animate'>
-                            <h1>Monday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Tuesday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Wednsday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Thursday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Friday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Saturday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <h1>Sunday</h1>
-                            Breakfast:<input type='text' placeholder='ex: Cereal' name='psw' required><br>
-                            Lunch:<input type='text' placeholder='ex: Egg Sandwich' name='psw' required><br>
-                            Dinner:<input type='text' placeholder='ex: Steak' name='psw' required><br>
-                            <button type='submit'>Add Exercise Plan</button>
+                        <form id='updateRecipes' method='post' class='modal-content animate'>
+                          <input type='hidden' id='UID' name='recipeUID' value=".$result2->UID[$i].">
+                          <input type='hidden' id='IID' name='recipeIID' value=".$result->IID.">
+                            <h1>Recipe:</h1>
+                            Name:<input type='text' placeholder='ex: Steak' name='recipe' required><br>
+                            Ingredients:<input type='text' placeholder='ex: Raw Beef' name='ing' required><br>
+                            Steps:<input type='text' placeholder='ex: Grill for 5 minutes' name='step' required><br>
+                            Calories:<input type='text' placeholder='ex: 500' name='cal' required><br>
+                            <button type='submit'>Add Recipe</button>
+                            <button onclick=\"document.getElementById('".$i."').style.display='none'\" type='buttton'>Cancel</button>
                         </form>
                         </div>";
                 }
@@ -379,6 +367,16 @@ function checkTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
 }
-
+$("#updateRecipes").on("submit", function(e) {
+ var dataString = $(this).serialize();
+  console.log(dataString);
+  $.post('http://localhost:5000/api.php', dataString, function(response) {
+    // Log the response to the console
+    //document.getElementById("textField").value = "";
+     console.log("Response: "+response);
+    //location.reload();
+});
+ e.preventDefault();
+});
 </script>
 </html> 
