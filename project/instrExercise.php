@@ -294,6 +294,8 @@ button {
           $response = curl_exec($client);
           $result2 = json_decode($response);
 
+          echo "<input type='hidden' id='totalNum' name='totalNum' value=".count($result2->UID).">";
+
           for($i=0;$i<count($result2->UID);$i++){
             echo "<button onclick=\"document.getElementById('".$i."').style.display='block'\">".$result2->FName[$i]." ".$result2->LName[$i]."</button>
                     <!-- The Modal -->
@@ -301,7 +303,7 @@ button {
                     <span onclick=\"document.getElementById('id01').style.display='none'\"
                     class=\"close\" title=\"Close Modal\" >&times;</span>
                     <!-- Modal Content -->
-                    <form id='updateExercisePlan' method='post' class='modal-content animate'>
+                    <form id='updateExercisePlan".$i."'method='post' class='modal-content animate'>
                     <input type='hidden' id='IID' name='exercisePlanUID' value=".$result2->UID[$i].">
                     <input type='hidden' id='UID' name='exercisePlanIID' value=".$result->IID.">
                         <h1>Monday</h1>
@@ -378,17 +380,22 @@ function checkTime(i) {
   return i;
 }
 
-$("#updateExercisePlan").on("submit", function(e) {
+var id = document.getElementById("totalNum").value;
+
+for (let i = 0; i < id; i++){
+  var str = "#updateExercisePlan".concat(i.toString());
+  $(str).on("submit", function(e) {
+ 
  var dataString = $(this).serialize();
   console.log(dataString);
-  $.post('http://localhost:5000/api.php', dataString, function(response) {
-    // Log the response to the console
-    //document.getElementById("textField").value = "";
-     console.log("Response: "+response);
-    //location.reload();
-});
- e.preventDefault();
-});
+    $.post('http://localhost:5000/api.php', dataString, function(response) {
+      // Log the response to the console
+      // console.log("Response: "+response);
+      location.reload();
+  });
+  e.preventDefault();
+  });
+}
 
 </script>
 </html> 

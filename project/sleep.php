@@ -210,6 +210,16 @@ tr:nth-child(even) {
     color: #666;
 }
 
+.sleepPlan{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+    font-family: 'Quicksand', cursive;
+    font-size: 2em;
+    color: #666;
+}
+
 </style>
 </head>
 <input type="hidden" id="custId" name="custId" value=<?php echo $result->userID?>> 
@@ -318,6 +328,22 @@ tr:nth-child(even) {
     <td><?php if($result2==null){echo 0;}else{echo $result2->sun;} ?></td>
   </tr>
 </table>
+
+<div class = "sleepPlan">
+  <?php
+    $url = "http://localhost:5000/api.php?getMySleepPlan=".$id;
+    
+    $client = curl_init($url);
+    curl_setopt($client,CURLOPT_RETURNTRANSFER,true);
+    $response = curl_exec($client);
+    $resultS = json_decode($response);
+    // echo $resultS->recSleepTime;
+    // echo $resultS->recWakeupTime;
+    // echo $resultS->recHours;
+  ?>
+  <h3>Instructor Recomendation:</h3>
+  <h3>Try to sleep at <?php echo $resultS->recSleepTime ?> and wakeup at <?php echo $resultS->recWakeupTime ?>. Aim for at least <?php echo $resultS->recHours ?> hours of sleep.</h3>
+</div>
 
 
 
