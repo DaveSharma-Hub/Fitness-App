@@ -310,7 +310,7 @@ if (isset($_GET['dietID']) && $_GET['dietID']!="") {
 	include('db.php');
 	$id = $_GET['dietID'];
     //echo $order_id;
-    $stmt = $con->prepare("SELECT * FROM Recipes, Diet_tracker where Recipes.DID = Diet_tracker.DID AND Diet_tracker.UID = ?");
+    $stmt = $con->prepare("SELECT * FROM Recipes where Recipes.UID = ?");
 	//$result = mysqli_query($con,);
 	$stmt->bind_param("i",$id);
     $stmt->execute();
@@ -1254,6 +1254,23 @@ if (isset($_POST['chatMsg']) && $_POST['chatMsg']!=""){
     $stmt = $con->prepare("INSERT INTO Messages (IID, UID, message,userSend) VALUES (?,?,?,?);");
     // //$result = mysqli_query($con,);
 	 $stmt->bind_param("iisi",$iid,$id,$msg,$userSend);
+     $stmt->execute();
+     echo 1;
+}
+
+if (isset($_POST['recipe']) && $_POST['recipe']!="" && isset($_POST['ing']) && $_POST['ing']!="" && isset($_POST['step']) && $_POST['step']!="" && isset($_POST['cal']) && $_POST['cal']!=""){
+    //echo "Testing";
+	include('db.php');
+	$name = $_POST['recipe'];
+    $ing = $_POST['ing'];
+    $steps = $_POST['step'];
+    $cals = $_POST['cal'];
+    $uid = $_POST['recipeUID'];
+    $iid = $_POST['recipeIID'];
+    // //echo $order_id;
+    $stmt = $con->prepare("INSERT INTO Recipes (IID, UID,steps, ingredients, calories, name) VALUES (?,?,?,?, ?,?);");
+    // //$result = mysqli_query($con,);
+	 $stmt->bind_param("iissss",$iid, $uid, $steps, $ing, $cals, $name);
      $stmt->execute();
      echo 1;
 }
