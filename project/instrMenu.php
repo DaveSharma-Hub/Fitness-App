@@ -131,6 +131,15 @@ body{
   overflow-y:auto;
   float:right;
 }
+.pic{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+    font-family: 'Quicksand', cursive;
+    font-size: 2em;
+    color: #666;
+}
 </style>
 </head>
 <body onload="start()">
@@ -148,6 +157,9 @@ body{
 <div class="welcome">
   <h3>Welcome <?php echo $result->Fname." ".$result->Lname ?></h3>
 </div>
+<div class="pic">
+    <img src='index.png'/>
+  </div>
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">
@@ -162,8 +174,8 @@ body{
     <canvas id="myChart2" style="max-width:400px;left:0"></canvas>
 </div> -->
 <div class="outer">
-<div style="float:left;position:relative;">
-    <canvas id="myChart" style="width:600px;margin-top:20px;"></canvas>
+<div style="float:left;position:relative;background-color:rgb(0,0,0,0.1);border-radius:10px;height:50vh">
+    <canvas id="myChart" style="width:660px;margin-top:20px;"></canvas>
 </div>
 <div class="insReview">
   <h1>Your Reviews</h1>
@@ -234,7 +246,7 @@ function checkTime(i) {
   return i;
 }
 var xValuesU = ["Total Subscribed Of Users"];
-  var barColorsU = ["rgba(54, 162, 235, 0.2)"];
+  var barColorsU = ["rgba(54, 162, 235, 1)"];
 function barChart(){
   
   

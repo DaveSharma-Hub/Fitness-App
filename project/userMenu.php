@@ -160,6 +160,15 @@ canvas {
   padding:10px;
   float:right;
 }
+.pic{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+    font-family: 'Quicksand', cursive;
+    font-size: 2em;
+    color: #666;
+}
 </style>
 </head>
 <body onload="startTime()">
@@ -174,7 +183,11 @@ canvas {
 </main>
 <div class="welcome">
   <h3>Welcome <?php echo $result->Fname." ".$result->Lname ?></h3>
+
 </div>
+<div class="pic">
+    <img src='index.png'/>
+  </div>
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">

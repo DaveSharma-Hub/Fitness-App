@@ -147,6 +147,15 @@ body{
 .Ireport h1{
     text-align:center;
 }
+.pic{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+    font-family: 'Quicksand', cursive;
+    font-size: 2em;
+    color: #666;
+}
 </style>
 </head>
 <body onload="start()">
@@ -164,6 +173,9 @@ body{
 <div class="welcome">
   <h3>Welcome Admin <?php echo $result->fname." ".$result->lname ?></h3>
 </div>
+<div class="pic">
+    <img src='index.png'/>
+  </div>
 <div id="txt"></div>
 
 <div id="mySidenav" class="sidenav">

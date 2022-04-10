@@ -17,7 +17,7 @@ if (isset($_POST['uname'])&&isset($_POST['psw']) && $_POST['uname']!="" && $_POS
             //echo $result->id;
             header('Location: adminMenu.php');
         }else{
-            header('Location: login.php');
+            header('Location: adminLogin.html');
         }
 }
 ?>
