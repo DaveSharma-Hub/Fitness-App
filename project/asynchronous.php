@@ -19,7 +19,7 @@
             }
             else{
                 //echo "<div class='msglnright'><span class='chat-time'>".date('m/d/Y', $data['longTime'])."</span> <b class='user-name'>".$data['userName']."</b><b class='user-data'>".$data['userData']."</b><br></div>";
-                echo "<div class='leftMe'>You</div><div class='left'>".$result3->msg[$i]."</div><br><br><br>";
+                echo "<div class='leftMe'>User</div><div class='left'>".$result3->msg[$i]."</div><br><br><br>";
             }                               
         }
     }
