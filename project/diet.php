@@ -422,7 +422,7 @@ class="close" title="Close Modal">&times;</span>
       <div class='flip-card-inner'>
         <div class='flip-card-front'>
           <h1>".$card_result->name[$i]."</h1>
-          <img src='https://cdn.loveandlemons.com/wp-content/uploads/2018/09/vegan-pizza.jpg' style='width:300px;height:250px;'>
+          <img src='https://thumbs.dreamstime.com/b/healthy-vegetarian-cooking-ingredients-tasty-pumpkin-dishes-recipes-bowls-tomato-sauces-spinach-sliced-onion-pumpkin-seeds-103694189.jpg' style='width:280px;height:150px;border-radius:20px'>
         </div>
         <div class='flip-card-back'>
           <h1>".$card_result->steps[$i]."</h1>
