@@ -342,7 +342,7 @@ tr:nth-child(even) {
     // echo $resultS->recHours;
   ?>
   <h3>Instructor Recomendation:</h3>
-  <h3>Try to sleep at <?php echo $resultS->recSleepTime ?> and wakeup at <?php echo $resultS->recWakeupTime ?>. Aim for at least <?php echo $resultS->recHours ?> hours of sleep.</h3>
+  <h3>Try to sleep at <?php if($resultS==null){echo "none";}else{echo $resultS->recSleepTime;} ?> and wakeup at <?php if($resultS==null){echo "none";}else{echo $resultS->recWakeupTime;} ?>. Aim for at least <?php if($resultS==null){echo "none";}else{echo $resultS->recHours;} ?> hours of sleep.</h3>
 </div>
 
 

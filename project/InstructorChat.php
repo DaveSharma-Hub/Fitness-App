@@ -139,7 +139,7 @@ body{
 .chat{
     background-color:rgb(0,0,0,0.1);
     border-radius:10px;
-    width:70%;
+    width:80%;
     margin:0 auto;
     height:50vh;
     overflow-y:auto;
