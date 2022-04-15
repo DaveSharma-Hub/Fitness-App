@@ -460,7 +460,7 @@ canvas {
     <div class="container">
 
       <label for="uname"><b>New BMI</b></label>
-      <input type="number" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->bmi;}?> name="exerciseBMI" required>
+      <input type="number" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->bmi;}?> name="bmiUserChange" required>
         <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
       <button type="submit">Submit</button>
     </div>
@@ -481,7 +481,7 @@ canvas {
     <div class="container">
     <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
       <label for="uname"><b>New Weight(Lbs)</b></label>
-      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->weight;}?> name="exerciseWeight" required>
+      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->weight;}?> name="weightUserChange" required>
 
       <button type="submit">Submit</button>
     </div>
@@ -503,7 +503,7 @@ canvas {
       <label for="uname"><b>New Height (cm)</b></label>
       <input type="hidden" id="Id" name="Id" value=<?php echo $result->userID?>> 
 
-      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->height;}?> name="height" required>
+      <input type="text" placeholder=<?php if($resultP==null){echo 0;}else{echo $resultP->height;}?> name="heightUserChange" required>
 
       <button type="submit">Submit</button>
     </div>

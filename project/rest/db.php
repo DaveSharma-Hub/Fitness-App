@@ -4,4 +4,5 @@
          echo "Failed to connect to MySQL: ";
          die();
      } 
+
 ?>

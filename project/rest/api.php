@@ -584,15 +584,13 @@ if (isset($_GET['personalHealthID']) && $_GET['personalHealthID']!="") {
             $w = $row['weight'];
             $h = $row['height'];
             $b = $row['BMI'];
-            if($w!=0 && $h!=0 && $b!=0){
-                responsePersonalHealth($w,$h,$b);
-                mysqli_close($con);
-            }
+            responsePersonalHealth($w,$h,$b);
+            mysqli_close($con);
         }
     }
     else{
         // $loggedIn = false;
-	    // responseLogin($loggedIn,NULL);
+	    responseLogin(NULL,NULL);
     }
 }
 
@@ -1435,7 +1433,64 @@ isset($_POST['sleepHours']) && $_POST['sleepHours']!="") {
     $stmt->execute();
     echo 1;
 }
+if (isset($_POST['heightUserChange']) && $_POST['heightUserChange']!="" &&
+isset($_POST['Id']) && $_POST['Id']!="") {
+    //echo "Testing";
+    include('db.php');
+    $height = $_POST['heightUserChange'];
+    $UID = $_POST['Id'];
+    $zero = 0;
+    $stmt = $con->prepare("INSERT INTO personal_health_information (UID, weight, height, BMI) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE height = ?");
 
+    $stmt->bind_param("iiiii",$UID, $zero, $height, $zero,$height);
+    $stmt->execute();
+    echo 1;
+}
+if (isset($_POST['weightUserChange']) && $_POST['weightUserChange']!="" &&
+isset($_POST['Id']) && $_POST['Id']!="") {
+    //echo "Testing";
+    include('db.php');
+    $weight = $_POST['weightUserChange'];
+    $UID = $_POST['Id'];
+    $zero = 0;
+    $stmt = $con->prepare("INSERT INTO personal_health_information (UID, weight, height, BMI) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE weight = ?");
+
+    $stmt->bind_param("iiiii",$UID, $weight, $zero, $zero,$weight);
+    $stmt->execute();
+    echo 1;
+}
+if (isset($_POST['bmiUserChange']) && $_POST['bmiUserChange']!="" &&
+isset($_POST['Id']) && $_POST['Id']!="") {
+    //echo "Testing";
+    include('db.php');
+    $BMI = $_POST['bmiUserChange'];
+    $UID = $_POST['Id'];
+    $zero = 0;
+    $stmt = $con->prepare("INSERT INTO personal_health_information (UID, weight, height, BMI) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE BMI = ?");
+
+    $stmt->bind_param("iiiii",$UID, $zero, $zero, $BMI,$BMI);
+    $stmt->execute();
+    echo 1;
+}
+
+if (isset($_POST['ExerciseName']) && $_POST['ExerciseName']!="" &&
+isset($_POST['ExerciseTime']) && $_POST['ExerciseTime']!="" &&
+isset($_POST['cal']) && $_POST['cal']!="" &&isset($_POST['eType']) && $_POST['eType']!="") {
+    //echo "Testing";
+    include('db.php');
+    $name = $_POST['ExerciseName'];
+    $time = $_POST['ExerciseTime'];
+    $cal = $_POST['cal'];
+    $type = $_POST['eType'];
+    $id = $_POST['Id'];
+
+
+    $stmt = $con->prepare("INSERT INTO exercise_tracker (calories_spent, timeSpent, UID, exerciseName, exerciseType) VALUES (?,?,?,?,?)");
+
+    $stmt->bind_param("iiiss",$cal, $time, $id, $name,$type);
+    $stmt->execute();
+    echo 1;
+}
     function responseLogin($loggedIn,$id){
         $response['login'] = $loggedIn;
         $response['id'] = $id;
