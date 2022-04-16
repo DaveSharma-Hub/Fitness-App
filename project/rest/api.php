@@ -1296,7 +1296,7 @@ if (isset($_POST['reviewscustIID']) && $_POST['reviewscustIID']!="" &&isset($_PO
 
     $stmt->bind_param("iis",$IID, $UID, $MSG);
     $stmt->execute();
-    echo "monkey";
+    echo 1;
 }
 
 if (isset($_POST['instrMyAccountFname']) && $_POST['instrMyAccountFname']!="" &&
